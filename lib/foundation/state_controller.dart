@@ -50,7 +50,7 @@ class StateBuilder<T extends StateController> extends StatefulWidget {
   const StateBuilder({super.key, required this.builder, this.tag, this.init});
 
   @override
-  State<StateBuilder> createState() => _StateBuilderState<T>();
+  State<StateBuilder<T>> createState() => _StateBuilderState<T>();
 }
 
 class _StateBuilderState<T extends StateController>
