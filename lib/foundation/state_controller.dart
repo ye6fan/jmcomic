@@ -10,7 +10,7 @@ class StateControllerWrapped {
 
 abstract class StateController {
   static final _controllers = <StateControllerWrapped>[];
-  List<void Function()> stateUpdater = [];
+  void Function() stateUpdate = () {};
 
   static T put<T extends StateController>(T controller,
       {bool autoRemove = false, String? tag}) {
@@ -39,11 +39,7 @@ abstract class StateController {
     if (index != -1) _controllers.removeAt(index);
   }
 
-  void update() {
-    for (var element in stateUpdater) {
-      element();
-    }
-  }
+  void update() => stateUpdate();
 }
 
 class StateBuilder<T extends StateController> extends StatefulWidget {
@@ -52,10 +48,6 @@ class StateBuilder<T extends StateController> extends StatefulWidget {
   final Widget Function(T controller) builder;
 
   const StateBuilder({super.key, required this.builder, this.tag, this.init});
-
-  Widget builderWrapped(StateController controller) {
-    return builder(controller as T);
-  }
 
   @override
   State<StateBuilder> createState() => _StateBuilderState<T>();
@@ -72,15 +64,15 @@ class _StateBuilderState<T extends StateController>
       StateController.put(widget.init!, tag: widget.tag, autoRemove: true);
     }
     controller = StateController.findOrNull<T>(tag: widget.tag)!;
-    controller.stateUpdater.add(() {
+    controller.stateUpdate = () {
       if (mounted) {
         setState(() {});
       }
-    });
+    };
   }
 
   @override
-  Widget build(BuildContext context) => widget.builderWrapped(controller);
+  Widget build(BuildContext context) => widget.builder(controller);
 
   @override
   void dispose() {
