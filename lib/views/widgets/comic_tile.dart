@@ -3,15 +3,15 @@ import 'package:flutter/material.dart';
 abstract class ComicTile extends StatelessWidget {
   const ComicTile({super.key});
 
-  Widget get image;
+  Widget get cover;
 
   String get name;
 
   String get author;
 
-  String get tags;
+  String get labels;
 
-  int get maxLines => 3;
+  int get maxLines => 3; //名字占据最多行
 
   int? get pages => null;
 
@@ -55,7 +55,7 @@ abstract class ComicTile extends StatelessWidget {
                         color: Theme.of(context).colorScheme.secondaryContainer,
                         borderRadius: BorderRadius.circular(8)),
                     clipBehavior: Clip.antiAlias,
-                    child: image),
+                    child: cover),
                 SizedBox.fromSize(
                   size: const Size(16, 5),
                 ),
@@ -63,7 +63,7 @@ abstract class ComicTile extends StatelessWidget {
                   child: _ComicDescription(
                     name: name,
                     author: author,
-                    tags: tags,
+                    labels: labels,
                     maxLines: maxLines,
                   ),
                 ),
@@ -79,13 +79,13 @@ abstract class ComicTile extends StatelessWidget {
 class _ComicDescription extends StatelessWidget {
   final String name;
   final String author;
-  final String tags;
+  final String labels;
   final int? maxLines;
 
   const _ComicDescription({
     required this.name,
     required this.author,
-    required this.tags,
+    required this.labels,
     this.maxLines,
   });
 
@@ -133,7 +133,7 @@ class _ComicDescription extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          tags,
+                          labels,
                           style: const TextStyle(
                             fontSize: 12.0,
                           ),

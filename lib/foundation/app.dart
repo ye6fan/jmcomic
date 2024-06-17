@@ -26,13 +26,19 @@ class App {
 
   static BuildContext? get globalContext => navigatorKey.currentContext;
 
+  static late final String dataPath;
+
   static late final String cachePath;
 
-  static late final String dataPath;
+  static late final String tempPath;
+
+  static late final String separator;
 
   static Future<void> init() async {
     cachePath = (await getApplicationCacheDirectory()).path;
     dataPath = (await getApplicationSupportDirectory()).path;
+    tempPath = (await getTemporaryDirectory()).path;
+    separator = Platform.pathSeparator;
   }
 
   static Future<T?> to<T extends Object?>(

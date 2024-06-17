@@ -1,6 +1,10 @@
 import 'package:flutter/cupertino.dart';
+import 'package:plagiarize/foundation/image_loader/cached_image_provider.dart';
 import 'package:plagiarize/network/jm_network/jm_models.dart';
 import 'package:plagiarize/views/widgets/comic_tile.dart';
+
+import '../../foundation/image_loader/animated_image.dart';
+import '../../network/jm_network/jm_config.dart';
 
 class JmComicTile extends ComicTile {
   final JmComicBrief comic;
@@ -8,15 +12,23 @@ class JmComicTile extends ComicTile {
   const JmComicTile(this.comic, {super.key});
 
   @override
-  Widget get image => const Center(child: Text('image'));
+  Widget get cover => AnimatedImage(
+        image: CachedImageProvider(
+          comic.image,
+          headers: {'User-Agent': webUA, 'Connection': 'keep-alive'},
+        ),
+        fit: BoxFit.cover,
+        height: double.infinity,
+        width: double.infinity,
+      );
 
   @override
-  String get tags => () {
-        var categories = '';
+  String get labels => () {
+        var labels = '';
         for (final category in comic.categories) {
-          categories += category.title;
+          labels += category.title;
         }
-        return categories;
+        return labels;
       }();
 
   @override

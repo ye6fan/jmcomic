@@ -1,6 +1,6 @@
 import 'package:plagiarize/network/jm_network/jm_config.dart';
 
-import '../base_comic.dart';
+import '../base_model.dart';
 
 class JmComicCategoryInfo {
   String id;
@@ -12,7 +12,7 @@ class JmComicCategoryInfo {
 class JmComicBrief extends BaseComic {
   List<JmComicCategoryInfo> categories;
 
-  String get image => getJmCoverUrl(id);
+  String get image => getJmCoverUrl(id); //cover封面
 
   bool get liked => false;
 

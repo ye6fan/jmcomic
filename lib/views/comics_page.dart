@@ -8,10 +8,10 @@ import '../network/jm_network/jm_models.dart';
 import '../network/res.dart';
 
 class ComicsPageLogic<T> extends StateController {
-  bool loading = true;
   int current = 1;
   List<T>? comics;
-  bool loadingData = false;
+  bool loading = true; //判断是否初次加载，页面渲染
+  bool loadingData = false; //判断是否加载当前页，防止重复加载
 
   void get(Future<Res<List<T>>> Function(int) getComics) async {
     if (loadingData) return;
@@ -29,10 +29,10 @@ class ComicsPageLogic<T> extends StateController {
     loadingData = false;
   }
 
-  void loadNextPage(Future<Res<List<T>>> Function(int) getComic) async {
+  void loadNextPage(Future<Res<List<T>>> Function(int) getComics) async {
     if (loadingData) return;
     loadingData = true;
-    var res = await getComic(current + 1);
+    var res = await getComics(current + 1);
     if (res.errorMessage != null) return;
     comics!.addAll(res.data as List<T>);
     current++;
@@ -83,7 +83,7 @@ abstract class ComicsPage<T> extends StatelessWidget {
               if (logic.current < 100000)
                 const SliverToBoxAdapter(
                   child: ListLoadingIndicator(),
-                ),
+                ), //这是个有趣的地方，在不加载最后一个时，是不会调用它的，因为从上到下
             ],
           );
         }
