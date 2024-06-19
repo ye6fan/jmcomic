@@ -27,8 +27,7 @@ class CachedImageProvider extends BaseImageProvider<CachedImageProvider> {
           cumulativeBytesLoaded: progress.currentBytes,
           expectedTotalBytes: progress.totalBytes));
     }
-    if (finishProgress!.data != null) return finishProgress.data!;
-    return await finishProgress.getFile().readAsBytes();
+    return await finishProgress!.getFile().readAsBytes();
   }
 
   @override

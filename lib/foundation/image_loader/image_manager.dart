@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
@@ -15,15 +14,13 @@ class DownloadProgress {
   final int totalBytes;
   final String url;
   final String savePath;
-  final Uint8List? data;
 
   bool get finished => currentBytes == totalBytes;
 
   File getFile() => File(savePath);
 
   const DownloadProgress(
-      this.currentBytes, this.totalBytes, this.url, this.savePath,
-      [this.data]);
+      this.currentBytes, this.totalBytes, this.url, this.savePath);
 }
 
 class ImageManager {
@@ -47,6 +44,7 @@ class ImageManager {
     if (!folder.existsSync()) folder.createSync(recursive: true);
   }
 
+  // 防止重复执行加载操作
   static Map<String, DownloadProgress> loadingItems = {};
 
   Stream<DownloadProgress> getImage(String url,
@@ -59,6 +57,7 @@ class ImageManager {
     }
     loadingItems[url] = DownloadProgress(0, 100, url, '');
     try {
+      // 要把漫画封面存入文件中
       var fileName = md5.convert(utf8.encode(url)).toString().substring(0, 10);
       fileName = '$fileName.jpg';
       final savePath = '$imageCachePath${App.separator}$fileName';
@@ -67,16 +66,16 @@ class ImageManager {
           options:
               Options(responseType: ResponseType.stream, headers: headers));
       if (res.data == null) throw Exception('Empty Data');
-      List<int> imageData = [];
+      int currentBytes = 0;
       int totalBytes = int.parse(res.data!.headers['Content-Length']![0]);
       var file = File(savePath);
       if (file.existsSync()) file.deleteSync();
       file.createSync();
       await for (var chunk in res.data!.stream) {
-        imageData.addAll(chunk);
+        currentBytes += chunk.length;
         file.writeAsBytesSync(chunk, mode: FileMode.append);
         var progress =
-            DownloadProgress(imageData.length, totalBytes, url, savePath);
+            DownloadProgress(currentBytes, totalBytes, url, savePath);
         yield progress;
         loadingItems[url] = progress;
       }

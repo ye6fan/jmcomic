@@ -49,7 +49,7 @@ abstract class ComicTile extends StatelessWidget {
             child: Row(
               children: [
                 Container(
-                    width: height * 0.68,
+                    width: height * 0.75,
                     height: double.infinity,
                     decoration: BoxDecoration(
                         color: Theme.of(context).colorScheme.secondaryContainer,

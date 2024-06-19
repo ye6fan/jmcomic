@@ -17,7 +17,6 @@ class JmComicTile extends ComicTile {
           comic.image,
           headers: {'User-Agent': webUA, 'Connection': 'keep-alive'},
         ),
-        fit: BoxFit.cover,
         height: double.infinity,
         width: double.infinity,
       );
