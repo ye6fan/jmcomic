@@ -15,7 +15,7 @@ abstract class ComicTile extends StatelessWidget {
 
   int? get pages => null;
 
-  void _onTap();
+  void onTap();
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +43,7 @@ abstract class ComicTile extends StatelessWidget {
         borderRadius: const BorderRadius.all(Radius.circular(12)),
         child: InkWell(
           borderRadius: BorderRadius.circular(12),
-          onTap: _onTap,
+          onTap: onTap,
           child: Padding(
             padding: const EdgeInsets.fromLTRB(16, 8, 24, 8),
             child: Row(
