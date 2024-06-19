@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:plagiarize/foundation/image_loader/cached_image_provider.dart';
 import 'package:plagiarize/network/jm_network/jm_models.dart';
+import 'package:plagiarize/views/main_page.dart';
 import 'package:plagiarize/views/widgets/comic_tile.dart';
 
 import '../../foundation/image_loader/animated_image.dart';
@@ -35,4 +36,9 @@ class JmComicTile extends ComicTile {
 
   @override
   String get name => comic.name;
+
+  @override
+  void onTap() {
+    MainPage.to(() => JmComicPage(comic.id));
+  }
 }
