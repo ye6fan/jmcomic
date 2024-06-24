@@ -45,15 +45,15 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^3.0.0
-  sqlite3: ^2.1.0
-  sqlite3_flutter_libs: ^0.5.22
-  path_provider: ^2.0.12
-  shared_preferences: ^2.0.16
-  dynamic_color: ^1.6.9
-  dio: ^5.4.1
-  crypto: ^3.0.3
-  pointycastle: ^3.7.3
+  sqlite3: ^2.1.0  # sqlite3的基础语法库
+  sqlite3_flutter_libs: ^0.5.22  # sqlite3的flutter运行库
+  path_provider: ^2.0.12  # 提供设备默认路径
+  shared_preferences: ^2.0.16  # 保存全局的属性
+  dynamic_color: ^1.6.9  # UI主题
+  dio: ^5.4.1  # 网络请求
+  crypto: ^3.0.3  # md5加密解密，utf8编码解码是自带的convert包
+  pointycastle: ^3.7.3  # 各种各样的加密解密算法
+  shimmer_animation: ^2.1.0 # 闪烁效果
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 

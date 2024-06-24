@@ -1,7 +1,5 @@
 import 'package:plagiarize/network/jm_network/jm_config.dart';
 
-import '../base_model.dart';
-
 class JmComicCategoryInfo {
   String id;
   String title;
@@ -9,15 +7,34 @@ class JmComicCategoryInfo {
   JmComicCategoryInfo(this.id, this.title);
 }
 
-class JmComicBrief extends BaseComic {
+class JmComicBrief {
+  String name;
+  String author;
+  String id;
+  String description;
   List<JmComicCategoryInfo> categories;
 
-  String get image => getJmCoverUrl(id); //cover封面
+  String get image => getJmCoverUrl(id); // cover封面
 
   bool get liked => false;
 
   bool get isFavorite => false;
 
   JmComicBrief(
-      super.name, super.author, super.id, super.description, this.categories);
+      this.name, this.author, this.id, this.description, this.categories);
+}
+
+class JmComicInfo {
+  String id;
+  String name;
+  List<String> author;
+  String description;
+  Map<int, String> series;
+  List<String> epNames;
+  List<String> tags;
+  bool liked;
+  bool is_favorite;
+
+  JmComicInfo(this.id, this.name, this.author, this.description, this.series,
+      this.epNames, this.tags, this.liked, this.is_favorite);
 }

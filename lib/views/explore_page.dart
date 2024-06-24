@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:plagiarize/base.dart';
 import 'package:plagiarize/foundation/state_controller.dart';
 
-import 'comic/jm_home_page.dart';
-import 'comic/jm_latest_page.dart';
+import 'jm_comic/jm_home_page.dart';
+import 'jm_comic/jm_latest_page.dart';
 
 class ExplorePage extends StatefulWidget {
   final int pages;

@@ -12,6 +12,8 @@ abstract class StateController {
   static final _controllers = <StateControllerWrapped>[];
   void Function() stateUpdate = () {};
 
+  void update() => stateUpdate();
+
   static T put<T extends StateController>(T controller,
       {bool autoRemove = false, String? tag}) {
     _controllers.add(StateControllerWrapped(controller, autoRemove, tag));
@@ -38,8 +40,6 @@ abstract class StateController {
         (!check || element.autoRemove));
     if (index != -1) _controllers.removeAt(index);
   }
-
-  void update() => stateUpdate();
 }
 
 class StateBuilder<T extends StateController> extends StatefulWidget {

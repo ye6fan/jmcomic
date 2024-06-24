@@ -7,7 +7,7 @@ import 'package:plagiarize/network/jm_network/jm_network.dart';
 const _jmUA =
     'Mozilla/5.0 (Linux; Android 13; 012345678 Build/TQ1A.230305.002; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/114.0.5735.196 Safari/537.36';
 
-const _jmVersion = '1.6.8';
+const _jmVersion = '1.7.0';
 
 const _jmAuthKey = '18comicAPPContent';
 

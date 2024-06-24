@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:plagiarize/foundation/state_controller.dart';
-import 'package:plagiarize/views/widgets/jm_comic_title.dart';
+import 'package:plagiarize/views/widgets/jm_comic_tile.dart';
 import 'package:plagiarize/views/widgets/list_loading_indicator.dart';
-import 'package:plagiarize/views/widgets/sliver_grid_delegate_with.dart';
+import 'package:plagiarize/views/widgets/sliver_grid_delegate_comics.dart';
 
 import '../network/jm_network/jm_models.dart';
 import '../network/res.dart';
@@ -10,34 +10,41 @@ import '../network/res.dart';
 class ComicsPageLogic<T> extends StateController {
   int current = 1;
   List<T>? comics;
-  bool loading = true; //判断是否初次加载，页面渲染
-  bool loadingData = false; //判断是否加载当前页，防止重复加载
+  bool firstLoading = true; //判断是否初次加载，页面渲染
+  bool loading = false; //判断是否加载当前页，防止重复加载
+  String? errorMessage;
 
   void get(Future<Res<List<T>>> Function(int) getComics) async {
-    if (loadingData) return;
-    loadingData = true;
+    if (loading) return;
+    loading = true;
     if (comics == null) {
       var res = await getComics(1);
-      if (res.errorMessage != null) return;
+      if (res.errorMessage != null) {
+        errorMessage = res.errorMessage;
+        return;
+      }
       comics = res.data;
-      loading = false;
+      firstLoading = false;
       update();
     } else {
-      loading = false;
+      firstLoading = false;
       update();
     }
-    loadingData = false;
+    loading = false;
   }
 
   void loadNextPage(Future<Res<List<T>>> Function(int) getComics) async {
-    if (loadingData) return;
-    loadingData = true;
+    if (loading) return;
+    loading = true;
     var res = await getComics(current + 1);
-    if (res.errorMessage != null) return;
+    if (res.errorMessage != null) {
+      errorMessage = res.errorMessage;
+      return;
+    }
     comics!.addAll(res.data as List<T>);
     current++;
     update();
-    loadingData = false;
+    loading = false;
   }
 }
 
@@ -54,7 +61,7 @@ abstract class ComicsPage<T> extends StatelessWidget {
       init: ComicsPageLogic<T>(),
       tag: tag,
       builder: (logic) {
-        if (logic.loading) {
+        if (logic.firstLoading) {
           logic.get(getComics);
           return Column(
             children: [
@@ -66,6 +73,17 @@ abstract class ComicsPage<T> extends StatelessWidget {
                   child: CircularProgressIndicator(),
                 ),
               ),
+            ],
+          );
+        } else if (logic.errorMessage != null) {
+          return Column(
+            children: [
+              SizedBox(
+                height: MediaQuery.of(context).padding.top,
+              ),
+              const Center(
+                child: Icon(Icons.error),
+              )
             ],
           );
         } else {
@@ -80,7 +98,7 @@ abstract class ComicsPage<T> extends StatelessWidget {
                 }),
                 gridDelegate: SliverGridDelegateWithComics(),
               ),
-              if (logic.current < 100000)
+              if (logic.current < 44354)
                 const SliverToBoxAdapter(
                   child: ListLoadingIndicator(),
                 ), //这是个有趣的地方，在不加载最后一个时，是不会调用它的，因为从上到下

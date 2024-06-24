@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
+import 'package:plagiarize/foundation/log.dart';
 import 'package:plagiarize/network/jm_network/jm_config.dart';
 import 'package:plagiarize/network/jm_network/jm_models.dart';
 import 'package:pointycastle/export.dart';
@@ -69,7 +70,48 @@ class JmNetwork {
       }
       return Res(comics);
     } catch (e) {
-      return Res(null, errorMessage: e.toString());
+      return Res(null, e.toString());
+    }
+  }
+
+  Future<Res<JmComicInfo>> getComicInfo(String id) async {
+    var res = await get('$baseUrl/album?comicName=&id=$id');
+    if (res.errorMessage != null) return Res(null, res.errorMessage);
+    try {
+      var author = <String>[];
+      for (var s in res.data['author'] ?? 'null') {
+        author.add(s);
+      }
+      var series = <int, String>{};
+      var epNames = <String>[];
+      for (var s in res.data['series'] ?? []) {
+        series[int.parse(s['sort'])] = s['id'];
+        String name = s['name'];
+        if (name.isEmpty) name = '第${s['sort']}话';
+        epNames.add(name);
+      }
+      var tags = <String>[];
+      for (var s in res.data['tags'] ?? []) {
+        tags.add(s);
+      }
+      var related = <JmComicBrief>[];
+      for (var s in res.data['related_list'] ?? []) {
+        related.add(JmComicBrief(
+            s['name'], s['author'], s['id'], s['description'] ?? '', []));
+      }
+      return Res(JmComicInfo(
+          id,
+          res.data['name'],
+          author,
+          res.data['description'],
+          series,
+          epNames,
+          tags,
+          res.data['liked'],
+          res.data['is_favorite']));
+    } catch (e, s) {
+      LogManager.addLog(LogLevel.error, 'Jm Info Analysis', '$e\n$s');
+      return Res(null, e.toString());
     }
   }
 }

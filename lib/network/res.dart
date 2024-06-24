@@ -8,5 +8,5 @@ class Res<T> {
   @override
   String toString() => data.toString();
 
-  const Res(this.data, {this.errorMessage});
+  const Res(this.data, [this.errorMessage]);
 }

@@ -6,7 +6,7 @@ import 'package:plagiarize/views/widgets/comic_tile.dart';
 
 import '../../foundation/image_loader/animated_image.dart';
 import '../../network/jm_network/jm_config.dart';
-import '../comic/jm_comic_page.dart';
+import '../jm_comic/jm_comic_page.dart';
 
 class JmComicTile extends ComicTile {
   final JmComicBrief comic;
