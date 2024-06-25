@@ -22,4 +22,11 @@ class JmComicPage extends ComicPage<JmComicInfo> {
   void read() {
     // TODO: implement read
   }
+
+  @override
+  Map<String, List<String>> get labels => {
+        'ID': [id],
+        '作者': data!.author,
+        '标签': data!.tags
+      };
 }

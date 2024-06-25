@@ -26,7 +26,9 @@ class ComicPageLogic<T> extends StateController {
 abstract class ComicPage<T> extends StatelessWidget {
   const ComicPage({super.key});
 
-  String get tag;
+  String get tag; // 用于标识controller(logic)的字符串
+
+  Map<String, List<String>> get labels; // 漫画标签列表为了防止混淆，不起名为tags
 
   String? get name;
 
@@ -77,7 +79,7 @@ abstract class ComicPage<T> extends StatelessWidget {
               return CustomScrollView(
                 controller: logic.controller,
                 slivers: [
-                  buildTitle(logic),
+                  buildAppBar(logic),
                   buildComicInfo(logic, context),
                   buildTags(logic, context),
                   ...buildEpisodeInfo(context),
@@ -94,7 +96,7 @@ abstract class ComicPage<T> extends StatelessWidget {
     });
   }
 
-  Widget buildTitle(ComicPageLogic<T> logic) {
+  Widget buildAppBar(ComicPageLogic<T> logic) {
     return SliverAppBar(
       shadowColor: Colors.transparent,
       title: AnimatedOpacity(
@@ -104,14 +106,13 @@ abstract class ComicPage<T> extends StatelessWidget {
       ),
       pinned: true,
       primary: true,
-    );
+    ); // 这个组件默认包含了返回按钮并且可以使用，和自动去掉顶部导航栏
   }
 
   Widget buildComicInfo(ComicPageLogic<T> logic, BuildContext context,
       [bool sliver = true]) {
     var body = LayoutBuilder(builder: (context, constrains) {
       return Column(
-        mainAxisSize: MainAxisSize.min,
         children: [
           SizedBox(
             width: double.infinity,
@@ -119,32 +120,22 @@ abstract class ComicPage<T> extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(
-                  width: 8,
+                  width: 6,
                 ),
                 buildCover(context, logic, 102, 136),
                 const SizedBox(
-                  width: 12,
+                  width: 16,
                 ),
                 Expanded(
-                    child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      width: double.infinity,
-                      child: SelectableText(
-                        name!,
-                        style: const TextStyle(fontSize: 18),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 8,
-                    ),
-                  ],
-                )),
+                  child: SelectableText(
+                    name!,
+                    style: const TextStyle(fontSize: 18),
+                  ),
+                ),
               ],
             ),
-          ).paddingHorizontal(10).paddingBottom(12),
-          buildAction(logic, context, true).paddingHorizontal(12),
+          ).paddingHorizontal(10).paddingBottom(16),
+          buildAction(logic, context).paddingHorizontal(16),
         ],
       );
     });
@@ -163,40 +154,22 @@ abstract class ComicPage<T> extends StatelessWidget {
     );
   }
 
-  Widget buildAction(
-      ComicPageLogic<T> logic, BuildContext context, bool center) {
-    if (logic.loading) {
-      return Container(
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.4),
-          borderRadius: BorderRadius.circular(12),
-        ),
-        height: 72,
-        width: double.infinity,
-      );
-    }
-
+  Widget buildAction(ComicPageLogic<T> logic, BuildContext context) {
     Widget buildItem(String title, IconData icon, void Function() onTap) {
       return SizedBox(
         width: 72,
         height: 64,
         child: Column(
           children: [
-            const SizedBox(
-              height: 12,
-            ),
-            Icon(
-              icon,
-              size: 24,
-              color: Theme.of(context).colorScheme.primary,
-            ),
+            const SizedBox(height: 12),
+            Icon(icon, size: 24, color: Theme.of(context).colorScheme.primary),
             const SizedBox(
               height: 8,
             ),
             Text(
               title,
               style: const TextStyle(fontSize: 12),
-            )
+            ), // 额，事实证明字体大小不意味着像素大小
           ],
         ),
       );
@@ -208,10 +181,29 @@ abstract class ComicPage<T> extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Wrap(
-            alignment: center ? WrapAlignment.center : WrapAlignment.start,
+            alignment: WrapAlignment.center,
             children: [
-              buildItem('从头开始', Icons.not_started_outlined, () => read()),
+              buildItem('开始', Icons.not_started_outlined, () => read()),
+              buildItem(
+                  '收藏', Icons.collections_bookmark_outlined, () => read()),
+              buildItem('喜欢', Icons.favorite_border, () => read()),
+              buildItem('评论', Icons.comment, () => read()),
             ],
+          ),
+          const SizedBox(height: 8),
+          SizedBox(
+            height: 48,
+            child: Row(
+              children: [
+                Expanded(
+                    child: FilledButton.tonal(
+                        onPressed: () => {}, child: Text('下载'))),
+                const SizedBox(width: 16),
+                Expanded(
+                    child: FilledButton.tonal(
+                        onPressed: () => {}, child: Text('阅读'))),
+              ],
+            ),
           )
         ],
       ),
@@ -219,7 +211,54 @@ abstract class ComicPage<T> extends StatelessWidget {
   }
 
   Widget buildTags(ComicPageLogic<T> logic, BuildContext context) {
-    return SliverToBoxAdapter(child: Text('tag'));
+    return SliverToBoxAdapter(
+        child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Divider(),
+        Text(
+          '信息',
+          style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 18),
+        ).paddingLeft(16),
+        const SizedBox(height: 8),
+        ...buildTagsCards(logic, context),
+        const Divider(),
+      ],
+    ));
+  }
+
+  Iterable<Widget> buildTagsCards(
+      ComicPageLogic<T> logic, BuildContext context) sync* {
+    for (var key in labels.keys) {
+      yield Padding(
+        padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
+        child: Wrap(
+          children: [
+            buildTagCard(key, context, true),
+            for (var val in labels[key]!) buildTagCard(val, context, false)
+          ],
+        ),
+      );
+    }
+  }
+
+  Widget buildTagCard(String label, BuildContext context, bool title) {
+    return Container(
+      margin: const EdgeInsets.fromLTRB(4, 4, 4, 4),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(12),
+        child: Card(
+          color: Color(title ? 0XFF5C6BC0 : 0XFF26A69A).withOpacity(0.5),
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
+            child: Text(
+              label,
+              style: TextStyle(fontSize: 13),
+            ),
+          ), // 字体与边框的填充
+        ),
+      ),
+    );
   }
 
   List<Widget> buildEpisodeInfo(BuildContext context) {
