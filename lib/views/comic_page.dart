@@ -28,7 +28,7 @@ abstract class ComicPage<T> extends StatelessWidget {
 
   String get tag;
 
-  String? get title;
+  String? get name;
 
   @nonVirtual
   T? get data => _logic.data;
@@ -100,7 +100,7 @@ abstract class ComicPage<T> extends StatelessWidget {
       title: AnimatedOpacity(
         opacity: 0.0,
         duration: const Duration(microseconds: 200),
-        child: Text(title!),
+        child: Text(name!),
       ),
       pinned: true,
       primary: true,
@@ -121,7 +121,7 @@ abstract class ComicPage<T> extends StatelessWidget {
                 const SizedBox(
                   width: 8,
                 ),
-                buildCover(context, logic, 136, 102),
+                buildCover(context, logic, 102, 136),
                 const SizedBox(
                   width: 12,
                 ),
@@ -132,7 +132,7 @@ abstract class ComicPage<T> extends StatelessWidget {
                     SizedBox(
                       width: double.infinity,
                       child: SelectableText(
-                        title!,
+                        name!,
                         style: const TextStyle(fontSize: 18),
                       ),
                     ),

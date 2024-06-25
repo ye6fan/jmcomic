@@ -16,7 +16,7 @@ class JmComicPage extends ComicPage<JmComicInfo> {
   Future<Res<JmComicInfo>> loadData() => JmNetwork().getComicInfo(id);
 
   @override
-  String? get title => data?.name;
+  String? get name => data?.name;
 
   @override
   void read() {

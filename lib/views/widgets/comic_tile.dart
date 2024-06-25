@@ -22,25 +22,16 @@ abstract class ComicTile extends StatelessWidget {
     Widget child = _buildDetailedMode(context);
     return Stack(children: [
       Positioned.fill(child: child),
-      Positioned(
-        left: 16,
-        top: 8,
-        child: Container(
-          height: 24,
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular(4)),
-          clipBehavior: Clip.antiAlias,
-          child: const Row(),
-        ),
-      )
-    ]);
+    ]); // 漫画瓷片用栈布局，其实就是sliver中的每一项用Stack布局
   }
 
   Widget _buildDetailedMode(BuildContext context) {
     return LayoutBuilder(builder: (context, constrains) {
+      // 上下都要空8像素
       final height = constrains.maxHeight - 16;
       return Material(
         color: Colors.transparent,
-        borderRadius: const BorderRadius.all(Radius.circular(12)),
+        borderRadius: BorderRadius.circular(12),
         child: InkWell(
           borderRadius: BorderRadius.circular(12),
           onTap: onTap,
@@ -55,10 +46,8 @@ abstract class ComicTile extends StatelessWidget {
                         color: Theme.of(context).colorScheme.secondaryContainer,
                         borderRadius: BorderRadius.circular(8)),
                     clipBehavior: Clip.antiAlias,
-                    child: cover),
-                SizedBox.fromSize(
-                  size: const Size(16, 5),
-                ),
+                    child: cover), // 高度已经被Padding的布局所限制
+                SizedBox(width: 16),
                 Expanded(
                   child: _ComicDescription(
                     name: name,
@@ -91,62 +80,39 @@ class _ComicDescription extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(1, 0, 0, 0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Text(
-            name,
-            style: const TextStyle(
-              fontWeight: FontWeight.w500,
-              fontSize: 14.0,
-            ),
-            maxLines: maxLines,
-            overflow: TextOverflow.ellipsis,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Text(
+          name,
+          style: const TextStyle(
+            fontWeight: FontWeight.w500,
+            fontSize: 14.0,
           ),
-          const Padding(padding: EdgeInsets.symmetric(vertical: 1.0)),
-          Column(
-            children: [
-              Text(
-                author,
-                style: const TextStyle(fontSize: 10.0),
-                maxLines: 1,
-              ),
-              const Padding(padding: EdgeInsets.symmetric(vertical: 1.0))
-            ],
-          ),
-          Expanded(
-              child: Column(
+          maxLines: maxLines,
+          overflow: TextOverflow.ellipsis,
+        ),
+        SizedBox(height: 5),
+        Text(
+          author,
+          style: const TextStyle(fontSize: 10.0),
+          maxLines: 1,
+        ),
+        Expanded(
+          child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.end,
-            children: <Widget>[
-              const SizedBox(
-                height: 5,
+            children: [
+              Text(
+                labels,
+                style: const TextStyle(
+                  fontSize: 12.0,
+                ),
               ),
-              const SizedBox(height: 2),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          labels,
-                          style: const TextStyle(
-                            fontSize: 12.0,
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                ],
-              )
             ],
-          ))
-        ],
-      ),
+          ),
+        ), // 这个Expanded不可以省略因为要太填充剩余空间
+      ],
     );
   }
 }

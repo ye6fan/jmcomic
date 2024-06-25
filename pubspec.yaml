@@ -53,7 +53,6 @@ dev_dependencies:
   dio: ^5.4.1  # 网络请求
   crypto: ^3.0.3  # md5加密解密，utf8编码解码是自带的convert包
   pointycastle: ^3.7.3  # 各种各样的加密解密算法
-  shimmer_animation: ^2.1.0 # 闪烁效果
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 

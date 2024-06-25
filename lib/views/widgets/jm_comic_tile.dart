@@ -23,6 +23,7 @@ class JmComicTile extends ComicTile {
         width: double.infinity,
       );
 
+  // 分类标签，感觉用labels也挺合适的
   @override
   String get labels => () {
         var labels = '';
