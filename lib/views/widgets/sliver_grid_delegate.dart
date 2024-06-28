@@ -27,3 +27,29 @@ class SliverGridDelegateWithComics extends SliverGridDelegate {
         reverseCrossAxis: false);
   }
 }
+
+class SliverGridDelegateWithFixedHeight extends SliverGridDelegate {
+  final double itemHeight;
+  final double maxCrossAxisExtent;
+
+  SliverGridDelegateWithFixedHeight(this.itemHeight, this.maxCrossAxisExtent);
+
+  @override
+  SliverGridLayout getLayout(SliverConstraints constraints) {
+    final width = constraints.crossAxisExtent;
+    var crossItems = width ~/ maxCrossAxisExtent;
+    if (width % maxCrossAxisExtent != 0) crossItems += 1;
+    return SliverGridRegularTileLayout(
+        crossAxisCount: crossItems,
+        mainAxisStride: itemHeight,
+        crossAxisStride: width / crossItems,
+        childMainAxisExtent: itemHeight,
+        childCrossAxisExtent: width / crossItems,
+        reverseCrossAxis: false);
+  }
+
+  @override
+  bool shouldRelayout(covariant SliverGridDelegate oldDelegate) {
+    return false;
+  }
+}

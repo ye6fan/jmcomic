@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:plagiarize/foundation/state_controller.dart';
 import 'package:plagiarize/views/widgets/jm_comic_tile.dart';
 import 'package:plagiarize/views/widgets/list_loading_indicator.dart';
-import 'package:plagiarize/views/widgets/sliver_grid_delegate_comics.dart';
+import 'package:plagiarize/views/widgets/sliver_grid_delegate.dart';
 
 import '../network/jm_network/jm_models.dart';
 import '../network/res.dart';

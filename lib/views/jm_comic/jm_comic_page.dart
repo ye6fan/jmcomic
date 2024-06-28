@@ -1,3 +1,4 @@
+import 'package:plagiarize/network/jm_network/jm_config.dart';
 import 'package:plagiarize/network/jm_network/jm_network.dart';
 import 'package:plagiarize/network/res.dart';
 import 'package:plagiarize/views/comic_page.dart';
@@ -16,12 +17,7 @@ class JmComicPage extends ComicPage<JmComicInfo> {
   Future<Res<JmComicInfo>> loadData() => JmNetwork().getComicInfo(id);
 
   @override
-  String? get name => data?.name;
-
-  @override
-  void read() {
-    // TODO: implement read
-  }
+  String get name => data!.name;
 
   @override
   Map<String, List<String>> get labels => {
@@ -29,4 +25,13 @@ class JmComicPage extends ComicPage<JmComicInfo> {
         '作者': data!.author,
         '标签': data!.tags
       };
+
+  @override
+  EpsData? get epsData => EpsData(data!.epNames, (i) {});
+
+  @override
+  String get cover => getJmCoverUrl(id); // 此方法是为了寻找常量图片信息，不是重新网络请求
+
+  @override
+  void read() {}
 }

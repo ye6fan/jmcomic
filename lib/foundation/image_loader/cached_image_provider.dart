@@ -9,8 +9,8 @@ import 'package:plagiarize/foundation/image_loader/image_manager.dart';
 class CachedImageProvider extends BaseImageProvider<CachedImageProvider> {
   final String url;
   final Map<String, String>? headers;
-
-  CachedImageProvider(this.url, {this.headers});
+  // 感觉声不声明常量差不多，唉，毕竟‘有性能’优化就声明吧
+  const CachedImageProvider(this.url, {this.headers});
 
   @override
   Future<Uint8List> load(StreamController<ImageChunkEvent> chunkEvents) async {
@@ -35,6 +35,7 @@ class CachedImageProvider extends BaseImageProvider<CachedImageProvider> {
     return SynchronousFuture(this);
   }
 
+  // 缓存就在这里设置的
   @override
   String get key => url;
 }
