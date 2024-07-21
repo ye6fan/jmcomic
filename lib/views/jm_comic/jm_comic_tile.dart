@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
-import 'package:jmcomic/foundation/image_loader/cached_image_provider.dart';
+import 'package:jmcomic/foundation/image_loader/image_manager.dart';
+import 'package:jmcomic/foundation/image_loader/stream_image_provider.dart';
 import 'package:jmcomic/views/main_page.dart';
 import 'package:jmcomic/views/widgets/comic_tile.dart';
 
@@ -15,15 +16,13 @@ class JmComicTile extends ComicTile {
 
   @override
   Widget get cover => AnimatedImage(
-        image: CachedImageProvider(
-          comic.image,
-          headers: {'User-Agent': JmConfig.webUA, 'Connection': 'keep-alive'},
-        ),
-        height: double.infinity,
-        width: double.infinity,
-      );
+      image: StreamImageProvider(
+          comic.imageUrl,
+          () => ImageManager().getImage(comic.imageUrl,
+              {'User-Agent': JmConfig.webUA, 'Connection': 'keep-alive'})),
+      height: double.infinity,
+      width: double.infinity);
 
-  // 分类标签，感觉用labels也挺合适的
   @override
   String get labels => () {
         var labels = '';

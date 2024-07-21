@@ -42,6 +42,7 @@ abstract class BaseImageProvider<T extends BaseImageProvider<T>>
       return decode(buffer);
     } catch (e) {
       scheduleMicrotask(() {
+        // evict驱逐
         PaintingBinding.instance.imageCache.evict(key);
       });
       rethrow;

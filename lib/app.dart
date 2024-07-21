@@ -3,11 +3,11 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 
-import 'app_page_route.dart';
-import 'log_manager.dart';
+import 'foundation/app_page_route.dart';
+import 'foundation/log_manager.dart';
 
-class AppController {
-  // 平台
+class App {
+  // 平台信息
   static bool get isAndroid => Platform.isAndroid;
 
   static bool get isIOS => Platform.isIOS;

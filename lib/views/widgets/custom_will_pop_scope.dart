@@ -9,6 +9,7 @@ class CustomWillPopScope extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // 子树内的任何地方发生pop事件都会传到这里并调用action
     return PopScope(
         onPopInvoked: (value) {
           action();

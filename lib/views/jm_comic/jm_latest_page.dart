@@ -8,7 +8,7 @@ class JmLatestPage extends ComicsPage<JmComicBrief> {
   const JmLatestPage({super.key});
 
   @override
-  String? get tag => 'jm_latest_page';
+  String get tag => 'jm_latest_page';
 
   @override
   Future<Res<List<JmComicBrief>>> getComics(int i) {

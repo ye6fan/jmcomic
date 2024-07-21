@@ -6,9 +6,7 @@ class JmHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constrains) {
-      return const Center(
-        child: Text('jm_home'),
-      );
+      return const Center(child: Text('jm_home'));
     });
   }
 }

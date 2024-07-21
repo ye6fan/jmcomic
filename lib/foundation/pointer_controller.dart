@@ -1,12 +1,9 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:jmcomic/foundation/app_controller.dart';
 import 'package:jmcomic/foundation/app_data.dart';
 import 'package:jmcomic/foundation/state_controller.dart';
 import 'package:jmcomic/views/comic_read_page.dart';
-import 'package:jmcomic/views/main_page.dart';
-import 'package:jmcomic/views/settings_page.dart';
 
 const _kMaxTapOffset = 4.0;
 
@@ -47,7 +44,6 @@ class PointerController {
 
   static void onPointerDown(PointerDownEvent event) {
     if (event.buttons == kSecondaryMouseButton) {
-      handleSecondaryPointerUp(event); // 这个方法暂不实现，好吧已经实现了
       return;
     }
     fingers++;
@@ -116,21 +112,6 @@ class PointerController {
     fingers--;
   }
 
-  static void handleSecondaryPointerUp(PointerDownEvent event) {
-    var logic = StateController.findOrNull<ComicReadPageLogic>()!;
-    showMenu(
-        context: AppController.globalContext!,
-        position: RelativeRect.fromLTRB(event.position.dx, event.position.dy,
-            event.position.dx, event.position.dy),
-        items: [
-          PopupMenuItem(
-              child: Text('设置'),
-              onTap: () => MainPage.to(() => SettingsPage())),
-          PopupMenuItem(child: Text('退出'), onTap: () => MainPage.back()),
-          PopupMenuItem(child: Text('章节'), onTap: logic.openEpsView)
-        ]);
-  }
-
   static void _handleDoubleClick(Offset position) {
     var logic = StateController.findOrNull<ComicReadPageLogic>()!;
     var controller = logic.photoViewController;
@@ -146,7 +127,7 @@ class PointerController {
       target = controller.getInitialScale!.call()! * 1.75;
     }
     var size = MediaQuery
-        .of(AppController.globalContext!)
+        .of(App.globalContext!)
         .size;
     controller.animateScale?.call(target,
         Offset(size.width / 2 - position.dx, size.height / 2 - position.dy));*/

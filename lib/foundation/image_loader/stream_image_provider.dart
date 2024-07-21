@@ -8,16 +8,19 @@ import 'package:jmcomic/foundation/image_loader/base_image_provider.dart';
 import 'image_manager.dart';
 
 class StreamImageProvider extends BaseImageProvider<StreamImageProvider> {
+  final String url;
+  final Map<String, String>? headers;
   final Stream<DownloadProgress> Function() streamBuilder;
-  @override
-  final String key;
 
-  StreamImageProvider(this.streamBuilder, this.key);
+  StreamImageProvider(this.url, this.streamBuilder, {this.headers});
+
+  @override
+  String get key => url;
 
   @override
   Future<Uint8List> load(StreamController<ImageChunkEvent> chunkEvents) async {
-    chunkEvents.add(
-        ImageChunkEvent(cumulativeBytesLoaded: 0, expectedTotalBytes: 100));
+    chunkEvents.add(const ImageChunkEvent(
+        cumulativeBytesLoaded: 0, expectedTotalBytes: 100));
     DownloadProgress? finishProgress;
     await for (var progress in streamBuilder()) {
       if (progress.currentBytes == progress.totalBytes) {

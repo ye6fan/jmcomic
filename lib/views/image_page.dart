@@ -1,12 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
-import 'package:jmcomic/foundation/app_controller.dart';
 import 'package:jmcomic/foundation/image_loader/animated_image.dart';
 import 'package:jmcomic/foundation/image_loader/image_manager.dart';
 import 'package:jmcomic/views/comic_read_page.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
+import '../app.dart';
 import '../foundation/app_data.dart';
 
 extension ScrollExtension on ScrollController {
@@ -38,7 +38,7 @@ extension ImageExt on ComicReadPage {
           // 感觉是滑动时的位置指示条
           physics: (logic.noScroll ||
                   logic.isCtrlPressed ||
-                  (logic.mouseScroll && !AppController.isMacOS))
+                  (logic.mouseScroll && !App.isMacOS))
               ? const NeverScrollableScrollPhysics()
               : const ClampingScrollPhysics(),
           // 物理特性，clamping夹紧
@@ -90,7 +90,7 @@ extension ImageExt on ComicReadPage {
     );
 
     return Positioned.fill(
-        top: AppController.isDesktop ? MediaQuery.of(context).padding.top : 0,
+        top: App.isDesktop ? MediaQuery.of(context).padding.top : 0,
         child: Listener(
           onPointerPanZoomUpdate: (event) {
             if (event.kind == PointerDeviceKind.trackpad) {

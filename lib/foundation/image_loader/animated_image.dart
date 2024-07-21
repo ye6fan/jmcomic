@@ -55,17 +55,16 @@ class _AnimatedImageState extends State<AnimatedImage> {
     Widget result = const Center();
     if (_imageInfo != null) {
       result = RawImage(
-        image: _imageInfo?.image,
-        width: widget.width,
-        height: widget.height,
-        filterQuality: widget.filterQuality,
-      );
+          image: _imageInfo?.image,
+          width: widget.width,
+          height: widget.height,
+          filterQuality: widget.filterQuality);
     } else if (_lastException != null) {
       result = const Center(child: Icon(Icons.error));
     } else {
       return SizedBox(
           width: widget.width,
-          height: widget.height ?? (widget.width! * 1.2), // 希望我是个天才
+          height: widget.height ?? (widget.width! * 1.2),
           child: Center(
               child: SizedBox(
                   width: 24,
@@ -79,10 +78,9 @@ class _AnimatedImageState extends State<AnimatedImage> {
                           : 0))));
     }
     return AnimatedSwitcher(
-      duration: const Duration(microseconds: 200),
-      reverseDuration: const Duration(microseconds: 200),
-      child: result,
-    );
+        duration: const Duration(microseconds: 200),
+        reverseDuration: const Duration(microseconds: 200),
+        child: result);
   }
 
   void _resolveImage() {

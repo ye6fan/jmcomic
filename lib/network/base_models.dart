@@ -28,8 +28,7 @@ abstract class ReadData {
   Future<Res<List<String>>> loadEpNetwork(int ep);
 
   ImageProvider createImageProvider(String ep, int page, String url) {
-    // 在这里使用了StreamImageProvider，并通过传递streamBuilder参数达到内部方法调用
-    return StreamImageProvider(() => loadImage(ep, page, url), '$id$ep$page');
+    return StreamImageProvider(url, () => loadImage(ep, page, url));
   }
 
   Stream<DownloadProgress> loadImage(String ep, int page, String url) async* {

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:jmcomic/foundation/app_controller.dart';
 import 'package:jmcomic/foundation/pointer_controller.dart';
 import 'package:jmcomic/foundation/state_controller.dart';
 import 'package:jmcomic/views/image_page.dart';
 import 'package:jmcomic/views/widgets/toolbar.dart';
-import 'package:photo_view/src/controller/photo_view_controller.dart';
+import 'package:photo_view/photo_view.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
+import '../app.dart';
 import '../network/base_models.dart';
 import '../network/jm_network/jm_models.dart';
 
@@ -28,7 +28,7 @@ class ComicReadPageLogic extends StateController {
   ScrollManager? scrollManager;
 
   // 判断是否是桌面端，鼠标滚动
-  bool mouseScroll = AppController.isDesktop;
+  bool mouseScroll = App.isDesktop;
 
   // ctrl键是否被按下 Hardware硬件、Keyboard键盘
   bool get isCtrlPressed => HardwareKeyboard.instance.isControlPressed;
@@ -109,7 +109,7 @@ class ComicReadPage extends StatelessWidget {
   // 在调用构造函数时，就已经添加过logic
   ComicReadPage.jmComic(String id, String name, List<String> epIds,
       List<String> epNames, this.initEp,
-      {this.initPage = 1})
+      {super.key, this.initPage = 1})
       : readData = JmReadData(id, name, epIds, epNames) {
     StateController.put(ComicReadPageLogic(initPage, initEp, readData),
         autoRemove: true);
@@ -130,15 +130,15 @@ class ComicReadPage extends StatelessWidget {
             if (!logic.loading) {
               logic.get();
               return DecoratedBox(
-                  decoration: BoxDecoration(color: Colors.black),
+                  decoration: const BoxDecoration(color: Colors.black),
                   child: Center(
                       child: Column(
                     children: [
                       AppBar(
                         shadowColor: Colors.transparent,
-                        title: AnimatedOpacity(
+                        title: const AnimatedOpacity(
                           opacity: 0.0,
-                          duration: const Duration(microseconds: 200),
+                          duration: Duration(microseconds: 200),
                         ),
                         primary: true,
                       ),
@@ -153,9 +153,9 @@ class ComicReadPage extends StatelessWidget {
               return Column(children: [
                 AppBar(
                   shadowColor: Colors.transparent,
-                  title: AnimatedOpacity(
+                  title: const AnimatedOpacity(
                     opacity: 0.0,
-                    duration: const Duration(microseconds: 200),
+                    duration: Duration(microseconds: 200),
                   ),
                   primary: true,
                 ),
@@ -186,9 +186,9 @@ class ComicReadPage extends StatelessWidget {
                   ));
               return KeyboardListener(
                   focusNode: logic.focusNode,
-                  child: body,
                   autofocus: true,
-                  onKeyEvent: logic.handleKeyboard);
+                  onKeyEvent: logic.handleKeyboard,
+                  child: body);
             }
           }));
     });

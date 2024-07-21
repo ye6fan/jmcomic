@@ -7,8 +7,8 @@ import 'package:dio/dio.dart';
 import 'package:dio/src/adapters/io_adapter.dart';
 import 'package:flutter/cupertino.dart';
 
+import '../../app.dart';
 import '../../network/jm_network/jm_config.dart';
-import '../app_controller.dart';
 import '../log_manager.dart';
 import 'image_recombine.dart';
 
@@ -42,14 +42,14 @@ class ImageManager {
   static late final String imageCachePath;
 
   static void createFolder() async {
-    imageCachePath =
-        '${AppController.cachePath}${AppController.separator}imageCache';
+    imageCachePath = '${App.cachePath}${App.separator}imageCache';
     var folder = Directory(imageCachePath);
     if (!folder.existsSync()) folder.createSync(recursive: true);
   }
 
   // 防止重复执行加载操作
   static Map<String, DownloadProgress> loadingItems = {};
+  // 缓存已加载的图片路径
   static Map<String, DownloadProgress> loadedItems = {};
 
   static bool get hasTask => loadingItems.isNotEmpty;
@@ -68,10 +68,9 @@ class ImageManager {
     }
     loadingItems[url] = DownloadProgress(0, 100, url, '');
     try {
-      // 要把漫画封面存入文件中
-      var fileName = md5.convert(utf8.encode(url)).toString().substring(0, 10);
+      var fileName = md5.convert(utf8.encode(url)).toString().substring(0, 15);
       fileName = '$fileName.jpg';
-      final savePath = '$imageCachePath${AppController.separator}$fileName';
+      final savePath = '$imageCachePath${App.separator}$fileName';
       yield loadingItems[url]!;
       var dio = Dio();
       dio.httpClientAdapter = IOHttpClientAdapter();
@@ -104,22 +103,17 @@ class ImageManager {
       {required String ep,
       required String scrambleId,
       required String bookId}) async* {
-    bookId = bookId.replaceAll(RegExp(r'\..+'), '');
-    final urlWithoutParam = url.replaceAll(RegExp(r'\?.+'), '');
-    while (loadingItems[urlWithoutParam] != null) {
-      var progress = loadingItems[urlWithoutParam]!;
+    while (loadingItems[url] != null) {
+      var progress = loadingItems[url]!;
       yield progress;
       if (progress.finished) {
         return;
       }
       await Future.delayed(const Duration(milliseconds: 100));
     }
-    loadingItems[urlWithoutParam] = DownloadProgress(0, 100, url, '');
+    loadingItems[url] = DownloadProgress(0, 100, url, '');
     try {
-      var fileName = md5.convert(utf8.encode(url)).toString();
-      if (fileName.length > 10) {
-        fileName = fileName.substring(0, 10);
-      }
+      var fileName = md5.convert(utf8.encode(url)).toString().substring(0, 15);
       int l;
       int r = url.length;
       for (l = url.length - 1; l >= 0; l--) {
@@ -132,8 +126,8 @@ class ImageManager {
       }
       fileName += url.substring(l, r);
       fileName = fileName.replaceAll(RegExp(r'\?.+'), '');
-      final savePath = '$imageCachePath${AppController.separator}$fileName';
-      yield loadingItems[urlWithoutParam]!;
+      final savePath = '$imageCachePath${App.separator}$fileName';
+      yield loadingItems[url]!;
       var bytes = <int>[];
       try {
         var dio = Dio();
@@ -141,7 +135,7 @@ class ImageManager {
         // 不加<ResponseBody>泛型修饰无法获取到stream属性
         var res = await dio.get<ResponseBody>(url,
             options: Options(responseType: ResponseType.stream, headers: {
-              'User-Agent': JmConfig.jmImgUA,
+              'User-Agent': JmConfig.jmUA,
               'x-requested-with': 'com.jiaohua_browser',
               'referer': 'https://www.jmapibranch2.cc/'
             }));
@@ -155,14 +149,14 @@ class ImageManager {
           }
           var progress = DownloadProgress(i, 100, url, savePath);
           yield progress;
-          loadingItems[urlWithoutParam] = progress;
+          loadingItems[url] = progress;
         }
       } catch (e) {
         rethrow;
       }
       var progress = DownloadProgress(90, 100, url, savePath);
       yield progress;
-      loadingItems[urlWithoutParam] = progress;
+      loadingItems[url] = progress;
       var file = File(savePath);
       if (!file.existsSync()) {
         file.create();
@@ -175,7 +169,7 @@ class ImageManager {
       }
       progress = DownloadProgress(1, 1, url, savePath);
       yield progress;
-      loadedItems[urlWithoutParam] = progress;
+      loadedItems[url] = progress;
     } catch (e) {
       rethrow;
     } finally {

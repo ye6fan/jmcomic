@@ -6,9 +6,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constrains) {
-      return const Center(
-        child: Text('home'),
-      );
+      return const Center(child: Text('home'));
     });
   }
 }

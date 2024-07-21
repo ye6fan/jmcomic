@@ -18,7 +18,7 @@ class JmComicBrief {
   String description;
   List<JmComicCategoryInfo> categories;
 
-  String get image => JmConfig.getJmCoverUrl(id); // cover封面
+  String get imageUrl => JmConfig.getJmCoverUrl(id);
 
   bool get liked => false;
 
@@ -31,7 +31,7 @@ class JmComicBrief {
 class JmComicInfo {
   String id;
   String name;
-  String total_views; // 总的浏览量
+  String totalViews; // 总的浏览量
   String likes; // 喜欢的人数
   List<String> author;
   String description;
@@ -39,12 +39,12 @@ class JmComicInfo {
   List<String> epNames;
   List<String> tags;
   bool liked;
-  bool is_favorite;
+  bool isFavorite;
 
   JmComicInfo(
       this.id,
       this.name,
-      this.total_views,
+      this.totalViews,
       this.likes,
       this.author,
       this.description,
@@ -52,7 +52,7 @@ class JmComicInfo {
       this.epNames,
       this.tags,
       this.liked,
-      this.is_favorite);
+      this.isFavorite);
 }
 
 class JmReadData extends ReadData {

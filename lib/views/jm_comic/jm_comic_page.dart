@@ -19,32 +19,29 @@ class JmComicPage extends ComicPage<JmComicInfo> {
   Future<Res<JmComicInfo>> loadComicInfo() => JmNetwork().getComicInfo(id);
 
   @override
-  String get name => data!.name;
+  String get name => data.name;
 
   @override
   Map<String, List<String>> get labels => {
         'ID': [id],
-        '作者': data!.author,
-        '标签': data!.tags
+        '作者': data.author,
+        '标签': data.tags
       };
 
   @override
-  EpsData? get epsData => EpsData(data!.epNames, (ep) async {
+  EpsData? get epsData => EpsData(data.epNames, (index) async {
         MainPage.to(() => ComicReadPage.jmComic(
-            data!.id, data!.name, data!.epIds, data!.epNames, ep + 1));
+            data.id, data.name, data.epIds, data.epNames, index + 1));
       });
 
   @override
-  String get cover => JmConfig.getJmCoverUrl(id); // 此方法是为了寻找常量图片信息，不是重新网络请求
+  String get coverUrl => JmConfig.getJmCoverUrl(id);
 
   @override
   void read() => readJmComic();
 
   void readJmComic() {
-    // byd用它导航，无法返回
-    /*AppController.globalTo(() => ComicReadPage.jmComic(
-        data!.id, data!.name, data!.epIds, data!.epNames, 1));*/
-    MainPage.to(() => ComicReadPage.jmComic(
-        data!.id, data!.name, data!.epIds, data!.epNames, 1));
+    MainPage.to(() =>
+        ComicReadPage.jmComic(data.id, data.name, data.epIds, data.epNames, 1));
   }
 }
