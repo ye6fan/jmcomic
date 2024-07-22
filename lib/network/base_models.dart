@@ -23,18 +23,21 @@ abstract class ReadData {
 
   List<String> get epNames;
 
-  Future<Res<List<String>>> loadEp(int ep) async => await loadEpNetwork(ep);
-
-  Future<Res<List<String>>> loadEpNetwork(int ep);
-
-  ImageProvider createImageProvider(String ep, int page, String url) {
-    return StreamImageProvider(url, () => loadImage(ep, page, url));
-  }
-
-  Stream<DownloadProgress> loadImage(String ep, int page, String url) async* {
+  Future<Res<List<String>>> loadEp(int epIndex) async {
     // 这里应该实现一个从下载中获取的方法
-    yield* loadImageNetwork(ep, page, url);
+    return await loadEpNetwork(epIndex);
   }
 
-  Stream<DownloadProgress> loadImageNetwork(String ep, int page, String url);
+  Future<Res<List<String>>> loadEpNetwork(int epIndex);
+
+  Stream<DownloadProgress> loadImage(String epId, int page, String url) async* {
+    // 这里应该实现一个从下载中获取的方法
+    yield* loadImageNetwork(epId, page, url);
+  }
+
+  Stream<DownloadProgress> loadImageNetwork(String epId, int page, String url);
+
+  ImageProvider createImageProvider(String epId, int page, String url) {
+    return StreamImageProvider(url, () => loadImage(epId, page, url));
+  }
 }

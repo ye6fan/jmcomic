@@ -35,6 +35,6 @@ class StreamImageProvider extends BaseImageProvider<StreamImageProvider> {
 
   @override
   Future<StreamImageProvider> obtainKey(ImageConfiguration configuration) {
-    return SynchronousFuture(this);
+    return SynchronousFuture(this); // obtain获得，立即返回当前实例
   }
 }

@@ -98,7 +98,9 @@ class JmNetwork {
         epNames.add(name);
       }
       var tags = <String>[];
-      for (var s in res.data['tags'] ?? []) tags.add(s);
+      for (var s in res.data['tags'] ?? []) {
+        tags.add(s);
+      }
       var related = <JmComicBrief>[];
       for (var s in res.data['related_list'] ?? []) {
         related.add(JmComicBrief(
@@ -123,13 +125,13 @@ class JmNetwork {
   }
 
   // 好吧，原来返回的是图片路径
-  Future<Res<List<String>>> getChapter(String id) async {
-    var res = await get('$baseUrl/chapter?&id=$id');
+  Future<Res<List<String>>> getChapter(String epId) async {
+    var res = await get('$baseUrl/chapter?&id=$epId');
     if (res.errorMessage != null) return Res(null, res.errorMessage);
     try {
       var images = <String>[];
       for (var s in res.data['images']) {
-        images.add(JmConfig.getJmImagesUrl(id, s));
+        images.add(JmConfig.getJmImagesUrl(epId, s));
       }
       return Res(images);
     } catch (e, s) {

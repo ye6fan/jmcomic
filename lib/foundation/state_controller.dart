@@ -7,7 +7,6 @@ class Pair<L, R> {
   Pair(this.left, this.right);
 }
 
-// controller的一个包装
 class StateControllerWrapped {
   StateController controller;
   bool autoRemove;
@@ -16,12 +15,10 @@ class StateControllerWrapped {
   StateControllerWrapped(this.controller, this.autoRemove, this.tag);
 }
 
-// 控制所有controller的行为，其实控制的是logic，也就是页面的数据
 abstract class StateController {
   static final _controllers = <StateControllerWrapped>[];
   List<Pair<String?, void Function()>> stateUpdates = [];
 
-  // 额，这里的参数明明在[]中，但是却要被?修饰
   void update([List<String>? ids]) {
     if (ids == null) {
       for (var element in stateUpdates) {
@@ -36,7 +33,7 @@ abstract class StateController {
     }
   }
 
-  // 在这里调用默认为false
+  // 在这里调用autoRemove默认为false
   static T put<T extends StateController>(T controller,
       {String? tag, bool autoRemove = false}) {
     _controllers.add(StateControllerWrapped(controller, autoRemove, tag));
@@ -44,7 +41,7 @@ abstract class StateController {
   }
 
   static T? findOrNull<T extends StateController>({Object? tag}) {
-    // 这里之所以是tag == null是为了共用logic也就是controller
+    // 这里之所以是tag == null是为了共用logic
     return _controllers
         .lastWhere((element) =>
             element.controller is T && (tag == null || tag == element.tag))
@@ -58,7 +55,6 @@ abstract class StateController {
   }
 }
 
-// 状态控制的widget
 class StateBuilder<T extends StateController> extends StatefulWidget {
   final String? tag; // 标识一整个state
   final String? id; // 标识state中的部分组件，更新时可以部分更新
@@ -80,7 +76,7 @@ class StateBuilder<T extends StateController> extends StatefulWidget {
   State<StateBuilder<T>> createState() => _StateBuilderState<T>();
 }
 
-// 状态控制的state，泛型要规定和声明好，不然state调不了widget的方法
+// 泛型要规定和声明好，不然state调不了widget的方法
 class _StateBuilderState<T extends StateController>
     extends State<StateBuilder<T>> {
   late T _controller; // 查找列表中已经存在的_controller
@@ -89,7 +85,7 @@ class _StateBuilderState<T extends StateController>
   void initState() {
     super.initState();
     if (widget.controller != null) {
-      // 在这里默认为true
+      // 在这里调用autoRemove默认为true
       StateController.put(widget.controller!,
           tag: widget.tag, autoRemove: true);
     }

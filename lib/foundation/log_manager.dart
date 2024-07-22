@@ -1,8 +1,18 @@
 import 'package:flutter/foundation.dart';
 
-void log(String content,
-    [String title = "debug", LogLevel level = LogLevel.info]) {
-  LogManager.addLog(level, title, content);
+enum LogLevel { error, warning, info }
+
+@immutable
+class Log {
+  final LogLevel level;
+  final String title;
+  final String content;
+  final DateTime time = DateTime.now();
+
+  @override
+  toString() => '${level.name} $title $time \n$content\n\n';
+
+  Log(this.level, this.title, this.content);
 }
 
 class LogManager {
@@ -18,9 +28,9 @@ class LogManager {
 
   static void addLog(LogLevel level, String title, String content) {
     if (!ignoreLimitation && content.length > maxLogLength) {
-      content = "${content.substring(0, maxLogLength)}...";
+      content = '${content.substring(0, maxLogLength)}...';
     }
-
+    // 是否启用调试模式
     if (kDebugMode) {
       print(content);
     }
@@ -42,7 +52,7 @@ class LogManager {
 
   @override
   String toString() {
-    var res = "Logs\n\n";
+    var res = 'Logs\n\n';
     for (var log in _logs) {
       res += log.toString();
     }
@@ -50,17 +60,7 @@ class LogManager {
   }
 }
 
-@immutable
-class Log {
-  final LogLevel level;
-  final String title;
-  final String content;
-  final DateTime time = DateTime.now();
-
-  @override
-  toString() => "${level.name} $title $time \n$content\n\n";
-
-  Log(this.level, this.title, this.content);
+void log(String content,
+    [String title = 'debug', LogLevel level = LogLevel.info]) {
+  LogManager.addLog(level, title, content);
 }
-
-enum LogLevel { error, warning, info }

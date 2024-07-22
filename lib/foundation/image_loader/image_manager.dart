@@ -37,8 +37,7 @@ class ImageManager {
     return cache ?? (cache = ImageManager._create());
   }
 
-  // static需要在late前面，静态方法没有对象，访问的数据也要是静态
-  // final修饰的必须在构造函数中，但是用late就可以不用了
+  // static需要在late前面，final修饰的必须在构造函数中，但是用late就可以不用了或者?修饰符
   static late final String imageCachePath;
 
   static void createFolder() async {
@@ -49,6 +48,7 @@ class ImageManager {
 
   // 防止重复执行加载操作
   static Map<String, DownloadProgress> loadingItems = {};
+
   // 缓存已加载的图片路径
   static Map<String, DownloadProgress> loadedItems = {};
 
@@ -100,7 +100,7 @@ class ImageManager {
   }
 
   Stream<DownloadProgress> getJmImage(String url,
-      {required String ep,
+      {required String epId,
       required String scrambleId,
       required String bookId}) async* {
     while (loadingItems[url] != null) {
@@ -113,19 +113,9 @@ class ImageManager {
     }
     loadingItems[url] = DownloadProgress(0, 100, url, '');
     try {
+      var l = url.lastIndexOf('.');
       var fileName = md5.convert(utf8.encode(url)).toString().substring(0, 15);
-      int l;
-      int r = url.length;
-      for (l = url.length - 1; l >= 0; l--) {
-        if (url[l] == '.') {
-          break;
-        }
-        if (url[l] == '?') {
-          r = l;
-        }
-      }
-      fileName += url.substring(l, r);
-      fileName = fileName.replaceAll(RegExp(r'\?.+'), '');
+      fileName += url.substring(l + 1);
       final savePath = '$imageCachePath${App.separator}$fileName';
       yield loadingItems[url]!;
       var bytes = <int>[];
@@ -161,9 +151,9 @@ class ImageManager {
       if (!file.existsSync()) {
         file.create();
       }
-      if (url.substring(l, r) != '.gif') {
+      if (url.substring(l + 1) != '.gif') {
         bytes = await startRecombineAndWriteImage(
-            Uint8List.fromList(bytes), ep, scrambleId, bookId, savePath);
+            Uint8List.fromList(bytes), epId, scrambleId, bookId, savePath);
       } else {
         await File(savePath).writeAsBytes(bytes);
       }

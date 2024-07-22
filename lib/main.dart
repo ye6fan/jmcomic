@@ -10,12 +10,9 @@ import 'foundation/app_page_route.dart';
 import 'foundation/log_manager.dart';
 import 'init.dart';
 
-bool notFirstUse = false;
-
 void main() {
   // Guarded守卫，经常用于main函数
   runZonedGuarded(() async {
-    // 确保Flutter的渲染系统和其他关键组件已经被正确初始化
     WidgetsFlutterBinding.ensureInitialized();
     // 自定义的初始化
     await init();
@@ -31,9 +28,8 @@ void main() {
   });
 }
 
-class MyApp extends StatefulWidget {
+class MyApp extends StatefulWidget{
   const MyApp({super.key});
-
   @override
   State<MyApp> createState() => _MyAppState();
 }
@@ -52,7 +48,6 @@ class _MyAppState extends State<MyApp> {
         statusBarColor: Colors.transparent,
         statusBarBrightness: Brightness.dark,
         statusBarIconBrightness: Brightness.dark,
-        systemStatusBarContrastEnforced: false,
         systemNavigationBarColor: Colors.transparent,
         systemNavigationBarIconBrightness: Brightness.dark,
         systemNavigationBarContrastEnforced: false));
@@ -67,7 +62,7 @@ class _MyAppState extends State<MyApp> {
           scaffoldMessengerKey: App.messageKey,
           navigatorKey: App.navigatorKey,
           debugShowCheckedModeBanner: false,
-          theme: ThemeData(colorScheme: dark),
+          theme: ThemeData(colorScheme: dark, useMaterial3: true),
           onGenerateRoute: (settings) =>
               AppPageRoute(builder: (context) => const MainPage()));
     });

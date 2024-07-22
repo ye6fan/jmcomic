@@ -5,38 +5,37 @@ import 'package:crypto/crypto.dart';
 import 'package:flutter/foundation.dart';
 import 'package:image/image.dart' as image;
 
-/// 转换自 https://github.com/tonquer/JMComic-qt/blob/main/src/tools/tool.py
-int getSegmentationNum(String epsId, String scrambleID, String pictureName) {
-  int scrambleId = int.parse(scrambleID);
-  int epsID = int.parse(epsId);
+int getSegmentationNum(String epId, String scrambleId, String bookId) {
+  int scrambleID = int.parse(scrambleId);
+  int epID = int.parse(epId);
   int num = 0;
 
-  if (epsID < scrambleId) {
+  if (epID < scrambleID) {
     num = 0;
-  } else if (epsID < 268850) {
+  } else if (epID < 268850) {
     num = 10;
-  } else if (epsID > 421926) {
-    String string = epsID.toString() + pictureName;
-    List<int> bytes = utf8.encode(string);
+  } else if (epID < 421927) {
+    String key = epId + bookId;
+    List<int> bytes = utf8.encode(key);
+    String hash = md5.convert(bytes).toString();
+    // 获取其最后一个字符的Unicode码点值
+    int charCode = hash.codeUnitAt(hash.length - 1);
+    int remainder = charCode % 10;
+    num = remainder * 2 + 2;
+  } else {
+    String key = epId + bookId;
+    List<int> bytes = utf8.encode(key);
     String hash = md5.convert(bytes).toString();
     int charCode = hash.codeUnitAt(hash.length - 1);
     int remainder = charCode % 8;
-    num = remainder * 2 + 2;
-  } else {
-    String string = epsID.toString() + pictureName;
-    List<int> bytes = utf8.encode(string);
-    String hash = md5.convert(bytes).toString();
-    int charCode = hash.codeUnitAt(hash.length - 1);
-    int remainder = charCode % 10;
     num = remainder * 2 + 2;
   }
 
   return num;
 }
 
-/// 转换自 https://github.com/tonquer/JMComic-qt/blob/main/src/tools/tool.py
 Future<Uint8List> segmentationPicture(RecombinationData data) async {
-  int num = getSegmentationNum(data.epsId, data.scrambleId, data.bookId);
+  int num = getSegmentationNum(data.epId, data.scrambleId, data.bookId);
 
   if (num <= 1) {
     return data.imgData;
@@ -45,9 +44,9 @@ Future<Uint8List> segmentationPicture(RecombinationData data) async {
   try {
     srcImg = image.decodeImage(data.imgData)!;
   } catch (e) {
-    throw e;
+    rethrow;
   }
-
+  // floor地板，向下取整；remainder余数
   int blockSize = (srcImg.height / num).floor();
   int remainder = srcImg.height % num;
 
@@ -80,7 +79,19 @@ Future<Uint8List> segmentationPicture(RecombinationData data) async {
   return image.encodeJpg(desImg);
 }
 
+class RecombinationData {
+  Uint8List imgData;
+  String epId;
+  String scrambleId;
+  String bookId;
+  String? savePath;
+
+  RecombinationData(this.imgData, this.epId, this.scrambleId, this.bookId,
+      [this.savePath]);
+}
+
 Future<Uint8List> recombineImageAndWriteFile(RecombinationData data) async {
+  // segmentation分割
   var bytes = await segmentationPicture(data);
   var file = File(data.savePath!);
   if (file.existsSync()) {
@@ -90,31 +101,19 @@ Future<Uint8List> recombineImageAndWriteFile(RecombinationData data) async {
   return bytes;
 }
 
-class RecombinationData {
-  Uint8List imgData;
-  String epsId;
-  String scrambleId;
-  String bookId;
-  String? savePath;
-
-  RecombinationData(this.imgData, this.epsId, this.scrambleId, this.bookId,
-      [this.savePath]);
-}
-
 int loadingItems = 0;
 
 final maxLoadingItems = Platform.isAndroid || Platform.isIOS ? 3 : 5;
 
-///启动一个新的线程转换图片并且写入文件
-Future<Uint8List> startRecombineAndWriteImage(Uint8List imgData, String epsId,
+Future<Uint8List> startRecombineAndWriteImage(Uint8List imgData, String epId,
     String scrambleId, String bookId, String savePath) async {
   while (loadingItems >= maxLoadingItems) {
-    await Future.delayed(const Duration(milliseconds: 100));
+    await Future.delayed(const Duration(milliseconds: 150));
   }
   loadingItems++;
   try {
     return await compute(recombineImageAndWriteFile,
-        RecombinationData(imgData, epsId, scrambleId, bookId, savePath));
+        RecombinationData(imgData, epId, scrambleId, bookId, savePath));
   } catch (e) {
     rethrow;
   } finally {

@@ -42,22 +42,18 @@ class _MainPageState extends State<MainPage> {
 
   final pages = [
     const ExploreControllerPage(
-      key: Key('0'),
+      key: Key('page0'),
     ),
     const MePage(
-      key: Key('1'),
+      key: Key('page1'),
     ),
   ];
-
-  void initLogic() {
-    StateController.put(ExplorePageLogic(), tag: 'explore_logic');
-  }
 
   @override
   void initState() {
     super.initState();
     //初始化logic，当调用页面的构造函数时，可以取出对应的logic
-    initLogic();
+    StateController.put(ExplorePageLogic(), tag: 'explore_logic');
   }
 
   @override

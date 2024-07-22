@@ -71,24 +71,18 @@ class JmReadData extends ReadData {
   JmReadData(this.id, this.name, this.epIds, this.epNames);
 
   @override
-  Future<Res<List<String>>> loadEpNetwork(int ep) {
-    var res = JmNetwork().getChapter(epIds.elementAtOrNull(ep - 1) ?? id);
-    return res;
+  Future<Res<List<String>>> loadEpNetwork(int epIndex) {
+    return JmNetwork().getChapter(epIds.elementAtOrNull(epIndex - 1) ?? id);
   }
 
-  // 这里也有很多要处理的细节问题，再说
   @override
-  Stream<DownloadProgress> loadImageNetwork(String ep, int page, String url) {
-    var bookId = '';
-    for (int i = url.length - 1; i >= 0; i--) {
-      if (url[i] == '/') {
-        bookId = url.substring(i + 1, url.length - 5);
-        break;
-      }
-    }
-    var index = int.parse(ep);
+  Stream<DownloadProgress> loadImageNetwork(String epId, int page, String url) {
+    var l = url.lastIndexOf('/');
+    var r = url.lastIndexOf('.');
+    var bookId = url.substring(l + 1, r);
+    var index = int.parse(epId);
     return ImageManager().getJmImage(url,
-        ep: epIds.elementAtOrNull(index - 1) ?? id,
+        epId: epIds.elementAtOrNull(index - 1) ?? id,
         scrambleId: JmConfig.scrambleId,
         bookId: bookId);
   }

@@ -19,7 +19,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: '>=3.3.1 <4.0.0'
+  sdk: '>=3.4.4 <4.0.0'
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -31,15 +31,12 @@ dependencies:
   flutter:
     sdk: flutter
 
-
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.6 # 自带的
-  sqlite3: ^2.1.0 # sqlite3的基础语法库
-  sqlite3_flutter_libs: ^0.5.22 # sqlite3的flutter运行库
+  dynamic_color: ^1.6.9 # UI主题
   path_provider: ^2.0.12 # 提供设备默认路径
   shared_preferences: ^2.0.16 # 保存全局的属性
-  dynamic_color: ^1.6.9 # UI主题
   dio: ^5.4.1 # 网络请求
   crypto: ^3.0.3 # md5加密解密，utf8编码解码是自带的convert包
   pointycastle: ^3.7.3 # 各种各样的加密解密算法

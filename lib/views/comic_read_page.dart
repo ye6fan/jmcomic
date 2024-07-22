@@ -14,18 +14,17 @@ import '../network/jm_network/jm_models.dart';
 class ComicReadPageLogic extends StateController {
   bool loading = false;
   int page; // 漫画页数
-  int ep; // 漫画的章节数，第一章绝对不是1是546831（举个例子）
+  int epIndex; // 漫画的章节数
   ReadData readData;
   String? errorMessage;
   var urls = <String>[]; // 漫画图片的请求URL
   var requestedLoadingItems = <bool>[];
   var focusNode = FocusNode();
   bool noScroll = false; // 不滚动？
-  bool showToolbar = true; // 展示工具栏
+  bool showToolbar = false; // 展示工具栏
   int showFloatingButtonValue = 0;
   double fABValue = 0; // 什么作用？
   double currentScale = 1.0;
-  ScrollManager? scrollManager;
 
   // 判断是否是桌面端，鼠标滚动
   bool mouseScroll = App.isDesktop;
@@ -60,14 +59,14 @@ class ComicReadPageLogic extends StateController {
 
   var photoViewControllers = <int, PhotoViewController>{};
 
-  ComicReadPageLogic(this.page, this.ep, this.readData);
+  ComicReadPageLogic(this.page, this.epIndex, this.readData);
 
-  late final void Function() openEpsView; // 新加的方法，控制章节试图展示
-  // 我笑了，统一成get了
+  late final void Function() openEpsView; // 新加的方法，控制章节视图展示
+
   Future<void> get() async {
     if (loading) return;
     loading = true;
-    var res = await readData.loadEp(ep);
+    var res = await readData.loadEp(epIndex);
     if (res.errorMessage != null) {
       errorMessage = res.errorMessage;
     } else {
@@ -103,15 +102,15 @@ class ComicReadPageLogic extends StateController {
 class ComicReadPage extends StatelessWidget {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final int initPage;
-  final int initEp;
+  final int initEpIndex;
   final ReadData readData;
 
   // 在调用构造函数时，就已经添加过logic
   ComicReadPage.jmComic(String id, String name, List<String> epIds,
-      List<String> epNames, this.initEp,
+      List<String> epNames, this.initEpIndex,
       {super.key, this.initPage = 1})
       : readData = JmReadData(id, name, epIds, epNames) {
-    StateController.put(ComicReadPageLogic(initPage, initEp, readData),
+    StateController.put(ComicReadPageLogic(initPage, initEpIndex, readData),
         autoRemove: true);
   }
 
@@ -162,7 +161,6 @@ class ComicReadPage extends StatelessWidget {
                 Center(child: Text(logic.errorMessage!))
               ]);
             } else {
-              logic.scrollManager = ScrollManager(logic, context);
 
               var body = Listener(
                   onPointerDown: PointerController.onPointerDown,
