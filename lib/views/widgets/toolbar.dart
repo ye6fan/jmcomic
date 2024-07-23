@@ -25,7 +25,6 @@ extension ToolBar on ComicReadPage {
                             .withOpacity(0.3),
                         child: SizedBox(
                             width: MediaQuery.of(context).size.width,
-                            height: 50 + MediaQuery.of(context).padding.top,
                             child: Row(children: [
                               Padding(
                                   padding:
@@ -51,7 +50,7 @@ extension ToolBar on ComicReadPage {
                                               overflow: TextOverflow.ellipsis,
                                               style: const TextStyle(
                                                   fontSize: 20)))))
-                            ])))
+                            ])).paddingTop(MediaQuery.of(context).padding.top))
                     : const SizedBox())));
   }
 
