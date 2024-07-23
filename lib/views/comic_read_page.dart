@@ -16,33 +16,25 @@ class ComicReadPageLogic extends StateController {
   int page; // 漫画页数
   int epIndex; // 漫画的章节数
   ReadData readData;
+
+  ComicReadPageLogic(this.page, this.epIndex, this.readData);
+
   String? errorMessage;
   var urls = <String>[]; // 漫画图片的请求URL
-  var requestedLoadingItems = <bool>[];
+  var requestedLoadingItems = <bool>[]; // 防止重复加载
   var focusNode = FocusNode();
-  bool noScroll = false; // 不滚动？
   bool showToolbar = false; // 展示工具栏
-  int showFloatingButtonValue = 0;
-  double fABValue = 0; // 什么作用？
-  double currentScale = 1.0;
   bool? rotation; // null跟随系统, false竖向, true横向
-  // 判断是否是桌面端，鼠标滚动
-  bool mouseScroll = App.isDesktop;
 
-  // ctrl键是否被按下 Hardware硬件、Keyboard键盘，放大缩小使用
-  bool get isCtrlPressed => HardwareKeyboard.instance.isControlPressed;
+  // 通过滚动条直接跳转
+  var itemScrollController = ItemScrollController();
 
-  // 我真是服了，居然让我用各种各样的方法进行手动导包
-  var itemScrollController = ItemScrollController(); // 通过滚动条直接跳转
   // 当前滚动到的元素序号，底层创建了ItemPositionsNotifier（通知者）
   var itemScrollListener = ItemPositionsListener.create();
 
-  // 索引当前页
   late int _index;
 
   int get index => _index;
-
-  var scrollController = ScrollController();
 
   set index(int value) {
     _index = value;
@@ -53,13 +45,11 @@ class ComicReadPageLogic extends StateController {
 
   final _indexChangeCallbacks = <void Function(int)>[];
 
-  // 图像控制器
+  // 图像控制器，这所以是多个猜测是，章节列表也要滑动
   PhotoViewController get photoViewController =>
       photoViewControllers[index] ?? photoViewControllers[0]!;
 
   var photoViewControllers = <int, PhotoViewController>{};
-
-  ComicReadPageLogic(this.page, this.epIndex, this.readData);
 
   late final void Function() openEpsView; // 新加的方法，控制章节视图展示
 
@@ -134,13 +124,10 @@ class ComicReadPage extends StatelessWidget {
                       child: Column(
                     children: [
                       AppBar(
-                        shadowColor: Colors.transparent,
-                        title: const AnimatedOpacity(
-                          opacity: 0.0,
-                          duration: Duration(microseconds: 200),
-                        ),
-                        primary: true,
-                      ),
+                          shadowColor: Colors.transparent,
+                          title: const AnimatedOpacity(
+                              opacity: 0.0,
+                              duration: Duration(microseconds: 150))),
                       const Expanded(
                         child: Center(
                           child: CircularProgressIndicator(),
@@ -151,36 +138,29 @@ class ComicReadPage extends StatelessWidget {
             } else if (logic.errorMessage != null) {
               return Column(children: [
                 AppBar(
-                  shadowColor: Colors.transparent,
-                  title: const AnimatedOpacity(
-                    opacity: 0.0,
-                    duration: Duration(microseconds: 200),
-                  ),
-                  primary: true,
-                ),
+                    shadowColor: Colors.transparent,
+                    title: const AnimatedOpacity(
+                        opacity: 0.0, duration: Duration(microseconds: 150))),
                 Center(child: Text(logic.errorMessage!))
               ]);
             } else {
               var body = Listener(
                   onPointerDown: PointerController.onPointerDown,
                   onPointerUp: PointerController.onPointerUp,
-                  onPointerCancel: PointerController.onPointerCancel,
                   behavior: HitTestBehavior.translucent,
-                  child: Stack(
-                    children: [
-                      buildComicView(logic, context, readData.id),
-                      Positioned(
-                          top: 0,
-                          bottom: 0,
-                          left: 0,
-                          right: 0,
-                          child: IgnorePointer(
-                              child: ColoredBox(
-                                  color: Colors.black.withOpacity(0.2)))),
-                      buildTopToolbar(logic, context),
-                      buildBottomToolbar(logic, context)
-                    ],
-                  ));
+                  child: Stack(children: [
+                    buildComicView(logic, context, readData.id),
+                    Positioned(
+                        top: 0,
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        child: IgnorePointer(
+                            child: ColoredBox(
+                                color: Colors.black.withOpacity(0.2)))),
+                    buildTopToolbar(logic, context),
+                    buildBottomToolbar(logic, context)
+                  ]));
               return KeyboardListener(
                   focusNode: logic.focusNode,
                   autofocus: true,

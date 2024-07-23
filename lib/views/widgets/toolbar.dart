@@ -25,7 +25,7 @@ extension ToolBar on ComicReadPage {
                             .withOpacity(0.3),
                         child: SizedBox(
                             width: MediaQuery.of(context).size.width,
-                            height: 50,
+                            height: 50 + MediaQuery.of(context).padding.top,
                             child: Row(children: [
                               Padding(
                                   padding:
@@ -51,12 +51,12 @@ extension ToolBar on ComicReadPage {
                                               overflow: TextOverflow.ellipsis,
                                               style: const TextStyle(
                                                   fontSize: 20)))))
-                            ])).paddingTop(MediaQuery.of(context).padding.top))
+                            ])))
                     : const SizedBox())));
   }
 
   Widget buildBottomToolbar(ComicReadPageLogic logic, BuildContext context) {
-    // rotation旋转direction方向portrait肖像、竖向的landscape景观、横向的
+    // rotation旋转direction方向portrait肖像、竖向的landscape景观、横向的Preferred首选Orientations方向
     return Positioned(
         bottom: 0,
         left: 0,
@@ -77,24 +77,11 @@ extension ToolBar on ComicReadPage {
                             .withOpacity(0.3),
                         child: SizedBox(
                             width: MediaQuery.of(context).size.width,
-                            height: 80,
+                            height: 60 + MediaQuery.of(context).padding.bottom,
                             child: Column(children: [
                               const SizedBox(height: 8),
                               Row(children: [
                                 const SizedBox(width: 8),
-                                Container(
-                                    height: 24,
-                                    padding:
-                                        const EdgeInsets.fromLTRB(6, 2, 6, 2),
-                                    decoration: BoxDecoration(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .tertiaryContainer,
-                                        borderRadius: BorderRadius.circular(8)),
-                                    child: const Text('E1 : P1'))
-                              ]),
-                              const Spacer(),
-                              Row(children: [
                                 Tooltip(
                                     message: '方向',
                                     child: IconButton(
@@ -134,17 +121,10 @@ extension ToolBar on ComicReadPage {
                                                 .setPreferredOrientations(
                                                     DeviceOrientation.values);
                                           }
-                                        })),
-                                Tooltip(
-                                    message: '收藏图片',
-                                    child: IconButton(
-                                        icon: const Icon(Icons.favorite),
-                                        onPressed: () {}))
+                                        }))
                               ])
-                            ])).paddingBottom(MediaQuery.of(
-                                context)
-                            .padding
-                            .bottom))
-                    : const SizedBox())));
+                            ])))
+                    : const SizedBox())).paddingTop(
+            MediaQuery.of(context).padding.bottom));
   }
 }

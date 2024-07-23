@@ -73,7 +73,6 @@ class _MainPageState extends State<MainPage> {
             child: Row(children: [
               Expanded(
                   child: Column(children: [
-                SizedBox(height: MediaQuery.of(context).padding.top),
                 Expanded(
                     child: ClipRect(
                         child: Navigator(

@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/gestures.dart';
 import 'package:jmcomic/foundation/image_loader/animated_image.dart';
 import 'package:jmcomic/foundation/image_loader/image_manager.dart';
 import 'package:jmcomic/views/comic_read_page.dart';
@@ -9,38 +8,20 @@ import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import '../app.dart';
 import '../foundation/app_data.dart';
 
-extension ScrollExtension on ScrollController {
-  static double? futurePosition;
-
-  void smoothTo(double value) {
-    futurePosition ??= position.pixels;
-    futurePosition = futurePosition! + value * 1.2;
-    futurePosition = futurePosition!
-        .clamp(position.minScrollExtent, position.maxScrollExtent);
-    animateTo(futurePosition!,
-        duration: const Duration(milliseconds: 150), curve: Curves.linear);
-  }
-}
-
 extension ImageExt on ComicReadPage {
   Widget buildComicView(
       ComicReadPageLogic logic, BuildContext context, String ep) {
-    ScrollExtension.futurePosition = null; // 滚动扩展的属性声明为null
     logic.photoViewControllers[0] ??= PhotoViewController();
     // 构造漫画的列表
     Widget buildTopToBottomContinuous() {
-      //普通的构造方法，另一个是多一个构建分隔符widget的方法
-      // physics物理特性clamping夹紧
+      // 普通的构造方法，另一个是多一个构建分隔符widget的方法
+      // physics物理特性clamping夹紧，猜测作用是使用电脑端放大缩小
       return ScrollablePositionedList.builder(
           itemScrollController: logic.itemScrollController,
           itemPositionsListener: logic.itemScrollListener,
           itemCount: logic.urls.length,
           addSemanticIndexes: false,
-          physics: (logic.noScroll ||
-                  logic.isCtrlPressed ||
-                  (logic.mouseScroll && !App.isMacOS))
-              ? const NeverScrollableScrollPhysics()
-              : const ClampingScrollPhysics(),
+          physics: const ClampingScrollPhysics(),
           itemBuilder: (context, index) {
             double width = MediaQuery.of(context).size.width;
             double height = MediaQuery.of(context).size.height;
@@ -65,12 +46,6 @@ extension ImageExt on ComicReadPage {
         controller: logic.photoViewControllers[0],
         // 当用户完成缩放手势时调用
         onScaleEnd: (context, details, value) {
-          var prev = logic.currentScale;
-          logic.currentScale = value.scale ?? 1.0;
-          if ((prev <= 1.05 && logic.currentScale > 1.05) ||
-              (prev > 1.05 && logic.currentScale <= 1.05)) {
-            logic.update();
-          }
           if (appdata.settings[2] != '1') {
             return false;
           }
@@ -84,19 +59,12 @@ extension ImageExt on ComicReadPage {
     return Positioned.fill(
         top: App.isDesktop ? MediaQuery.of(context).padding.top : 0,
         child: Listener(
-            onPointerPanZoomUpdate: (event) {
-              if (event.kind == PointerDeviceKind.trackpad) {
-                if (event.scale == 1.0) {
-                  logic.scrollController.smoothTo(0 - event.panDelta.dy * 1.2);
-                }
-              }
-            },
-            onPointerDown: (event) => logic.mouseScroll = false,
             child:
                 NotificationListener<ScrollUpdateNotification>(child: body)));
   }
 }
 
+//
 bool updateLocation(BuildContext context, PhotoViewController controller) {
   final width = MediaQuery.of(context).size.width;
   final height = MediaQuery.of(context).size.height;
@@ -147,8 +115,7 @@ ImageProvider createImageProvider(
 void precacheComicImage(
     ComicReadPageLogic logic, BuildContext context, int index, String ep) {
   if (logic.requestedLoadingItems.length != logic.urls.length) {
-    // 为什么多一位
-    logic.requestedLoadingItems = List.filled(logic.urls.length + 1, false);
+    logic.requestedLoadingItems = List.filled(logic.urls.length, false);
   }
   int precacheNum = int.parse(appdata.settings[3]) + index;
   for (; index < precacheNum; index++) {

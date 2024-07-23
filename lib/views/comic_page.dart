@@ -66,8 +66,7 @@ abstract class ComicPage<T> extends StatelessWidget {
     final Widget appBar = AppBar(
         shadowColor: Colors.transparent,
         title: const AnimatedOpacity(
-            opacity: 0.0, duration: Duration(microseconds: 200)),
-        primary: true);
+            opacity: 0.0, duration: Duration(microseconds: 150)));
 
     return LayoutBuilder(builder: (context, constraints) {
       return Scaffold(

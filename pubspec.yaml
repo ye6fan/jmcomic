@@ -44,7 +44,7 @@ dependencies:
   cookie_jar: ^4.0.8 # 存储、读取cookie
   dio_cookie_manager: ^3.1.1 # 作为拦截器(桥梁)自动化处理cookie
   image: 4.1.7 # 在重构图片时使用，导包4.2.0会报错：rangeerror: value not in range: ${}+3
-  
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

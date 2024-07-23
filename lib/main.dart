@@ -48,9 +48,7 @@ class _MyAppState extends State<MyApp> {
         statusBarBrightness: Brightness.light,
         statusBarIconBrightness: Brightness.light,
         systemNavigationBarIconBrightness: Brightness.light,
-        systemStatusBarContrastEnforced: false,
         systemNavigationBarContrastEnforced: false));
-
     return MaterialApp(
         title: 'yefan',
         navigatorKey: App.navigatorKey,
