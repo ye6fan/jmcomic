@@ -20,13 +20,13 @@
 - 问题3：安装在实体机上无法联网
 - 解决3：直接在网上搜就可以了，向两个AndroidManifest.xml中加入一些配置
 
-## Thanks
+## 感谢
 
 [![Readme Card](https://github-readme-stats.vercel.app/api/pin/?username=wgh136&repo=PicaComic)](https://github.com/wgh136/PicaComic)
 
 本项目所有的代码都抄袭和修改自它，包括README格式。
 
-## Screenshots
+## 项目展示
 
 <img src="screenshots/jmlaste.jpg" style="width: 200px"><img src="screenshots/jminfo.jpg" style="width: 200px">
 <img src="screenshots/jmlook.jpg" style="width: 200px"><img src="screenshots/fangda.jpg" style="width: 200px">
