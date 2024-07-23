@@ -28,7 +28,8 @@
 
 ## Screenshots
 
-<img src="screenshots/jmlaste.jpg" style="width: 260px"><img src="screenshots/jminfo.jpg" style="width: 260px"><img src="screenshots/jmlook.jpg" style="width: 260px">
+<img src="screenshots/jmlaste.jpg" style="width: 200px"><img src="screenshots/jminfo.jpg" style="width: 200px">
+<img src="screenshots/jmlook.jpg" style="width: 200px"><img src="screenshots/fangda.jpg" style="width: 200px">
 <img src="screenshots/hengping.jpg" style="width: 800px">
 <img src="screenshots/winjm.bmp" style="width: 800px">
 <img src="screenshots/wininfo.bmp" style="width: 800px">
