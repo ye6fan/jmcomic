@@ -5,7 +5,7 @@ class Appdata {
   List<String> settings = [
     '0,1', // 0 构建有哪些导航页面
     '0', // 1 双击缩放
-    '1', // 2 限制图片宽度
+    '0', // 2 限制图片宽度
     '2', // 3 预加载图片个数
     '0', // 4 点击屏幕上下区域翻页
   ];
@@ -16,15 +16,15 @@ class Appdata {
 
   Future<void> writeData([bool sync = true]) async {
     // shared_preferences包，保存全局的数据
-    var s = await SharedPreferences.getInstance();
-    await s.setString("jmName", jmName);
-    await s.setString("jmPwd", jmPwd);
+    var instance = await SharedPreferences.getInstance();
+    await instance.setString("jmName", jmName);
+    await instance.setString("jmPwd", jmPwd);
   }
 
   Future<void> readData() async {
-    var s = await SharedPreferences.getInstance();
-    jmName = s.getString("jmName") ?? "";
-    jmPwd = s.getString("jmPwd") ?? "";
+    var instance = await SharedPreferences.getInstance();
+    jmName = instance.getString("jmName") ?? "";
+    jmPwd = instance.getString("jmPwd") ?? "";
   }
 }
 

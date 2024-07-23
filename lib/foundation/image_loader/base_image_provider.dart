@@ -52,6 +52,7 @@ abstract class BaseImageProvider<T extends BaseImageProvider<T>>
   }
 
   Future<Uint8List> load(StreamController<ImageChunkEvent> chunkEvents);
+
   // 这个key是自己声明用来重用图片的
   String get key;
 

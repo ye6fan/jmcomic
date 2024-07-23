@@ -38,10 +38,7 @@ mixin _AppRouteTransitionMixin<T> on PageRoute<T> {
     }
     // Semantics提高应用的可访问性，支持阅读的辅助技术
     return Semantics(
-      scopesRoute: true,
-      explicitChildNodes: true,
-      child: _child,
-    );
+        scopesRoute: true, explicitChildNodes: true, child: _child);
   }
 }
 
@@ -54,11 +51,11 @@ class AppPageRoute<T> extends PageRoute<T> with _AppRouteTransitionMixin<T> {
 
   final WidgetBuilder builder;
 
-  AppPageRoute({
-    required this.builder,
-    this.preventRebuild = true,
-    this.maintainState = true,
-  });
+  AppPageRoute(
+      {required this.builder,
+      this.preventRebuild = true,
+      this.maintainState = true,
+      super.settings});
 
   @override
   Widget buildContent(BuildContext context) => builder(context);

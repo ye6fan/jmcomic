@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:jmcomic/views/main_page.dart';
@@ -21,15 +20,15 @@ void main() {
       LogManager.addLog(LogLevel.error, 'Unhandled Exception',
           '${details.exception}\n${details.stack}');
     };
-    // 入口
     runApp(const MyApp());
   }, (error, stack) {
     LogManager.addLog(LogLevel.error, 'Unhandled Exception', '$error\n$stack');
   });
 }
 
-class MyApp extends StatefulWidget{
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
   @override
   State<MyApp> createState() => _MyAppState();
 }
@@ -43,28 +42,24 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    // systemNavigationBar底部导航栏、statusBar顶部状态栏，将它们设置为transparent透明
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        statusBarBrightness: Brightness.dark,
-        statusBarIconBrightness: Brightness.dark,
         systemNavigationBarColor: Colors.transparent,
-        systemNavigationBarIconBrightness: Brightness.dark,
+        statusBarColor: Colors.transparent,
+        statusBarBrightness: Brightness.light,
+        statusBarIconBrightness: Brightness.light,
+        systemNavigationBarIconBrightness: Brightness.light,
+        systemStatusBarContrastEnforced: false,
         systemNavigationBarContrastEnforced: false));
-    // dynamic_color包中提供统一的颜色和布局的根widget，theme主题scheme计划
-    return DynamicColorBuilder(builder: (light, dark) {
-      // 设置种子可以生成一个完整的颜色方案
-      dark = ColorScheme.fromSeed(
-          seedColor: const Color(0XFFEC407A), brightness: Brightness.dark);
-      // messageKey、navigatorKey要在这里绑定，不然后续访问会为null
-      return MaterialApp(
-          title: 'yefan',
-          scaffoldMessengerKey: App.messageKey,
-          navigatorKey: App.navigatorKey,
-          debugShowCheckedModeBanner: false,
-          theme: ThemeData(colorScheme: dark, useMaterial3: true),
-          onGenerateRoute: (settings) =>
-              AppPageRoute(builder: (context) => const MainPage()));
-    });
+
+    return MaterialApp(
+        title: 'yefan',
+        navigatorKey: App.navigatorKey,
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(
+                seedColor: Colors.pinkAccent, brightness: Brightness.dark),
+            useMaterial3: true),
+        onGenerateRoute: (settings) =>
+            AppPageRoute(builder: (context) => const MainPage()));
   }
 }

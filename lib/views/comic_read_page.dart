@@ -25,11 +25,11 @@ class ComicReadPageLogic extends StateController {
   int showFloatingButtonValue = 0;
   double fABValue = 0; // 什么作用？
   double currentScale = 1.0;
-
+  bool? rotation; // null跟随系统, false竖向, true横向
   // 判断是否是桌面端，鼠标滚动
   bool mouseScroll = App.isDesktop;
 
-  // ctrl键是否被按下 Hardware硬件、Keyboard键盘
+  // ctrl键是否被按下 Hardware硬件、Keyboard键盘，放大缩小使用
   bool get isCtrlPressed => HardwareKeyboard.instance.isControlPressed;
 
   // 我真是服了，居然让我用各种各样的方法进行手动导包
@@ -161,7 +161,6 @@ class ComicReadPage extends StatelessWidget {
                 Center(child: Text(logic.errorMessage!))
               ]);
             } else {
-
               var body = Listener(
                   onPointerDown: PointerController.onPointerDown,
                   onPointerUp: PointerController.onPointerUp,

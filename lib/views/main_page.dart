@@ -16,6 +16,7 @@ class MainPage extends StatefulWidget {
   const MainPage({super.key});
 
   // key要被绑定到widget上，才可以正常使用
+  @protected
   static final navigatorKey = GlobalKey<NavigatorState>();
 
   static void to(Widget Function() page) async {
@@ -59,7 +60,7 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     var titles = ['探索', '我的'];
-
+    // Expanded要在Row中，不然灰屏
     return Material(
         child: CustomWillPopScope(
             action: () {
@@ -69,69 +70,71 @@ class _MainPageState extends State<MainPage> {
                 SystemNavigator.pop();
               }
             },
-            child: Expanded(
-                child: Column(children: [
-              SizedBox(height: MediaQuery.of(context).padding.top),
+            child: Row(children: [
               Expanded(
-                  child: ClipRect(
-                      child: Navigator(
-                          key: MainPage.navigatorKey,
-                          onGenerateRoute: (settings) => AppPageRoute(
-                              preventRebuild: false,
-                              builder: (context) {
-                                // 顶部状态栏、内容、底部导航栏，Destination目的地
-                                return Column(children: [
-                                  AppBar(
-                                    title: Text(titles[i]),
-                                    actions: [
-                                      Tooltip(
-                                        message: '搜索',
-                                        child: IconButton(
-                                          icon: const Icon(Icons.search),
-                                          onPressed: () => MainPage.to(
-                                              () => const PreSearchPage()),
+                  child: Column(children: [
+                SizedBox(height: MediaQuery.of(context).padding.top),
+                Expanded(
+                    child: ClipRect(
+                        child: Navigator(
+                            key: MainPage.navigatorKey,
+                            onGenerateRoute: (settings) => AppPageRoute(
+                                preventRebuild: false,
+                                builder: (context) {
+                                  // 顶部状态栏、内容、底部导航栏，Destination目的地
+                                  return Column(children: [
+                                    AppBar(
+                                      title: Text(titles[i]),
+                                      actions: [
+                                        Tooltip(
+                                          message: '搜索',
+                                          child: IconButton(
+                                            icon: const Icon(Icons.search),
+                                            onPressed: () => MainPage.to(
+                                                () => const PreSearchPage()),
+                                          ),
                                         ),
-                                      ),
-                                      Tooltip(
-                                        message: '设置',
-                                        child: IconButton(
-                                          icon: const Icon(Icons.settings),
-                                          onPressed: () => MainPage.to(
-                                              () => const SettingsPage()),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  Expanded(
-                                    child: AnimatedSwitcher(
-                                      duration:
-                                          const Duration(milliseconds: 150),
-                                      reverseDuration:
-                                          const Duration(milliseconds: 150),
-                                      child: pages[i],
-                                    ),
-                                  ),
-                                  CustomNavigationBar(
-                                      destinations: const <NavigationItemData>[
-                                        NavigationItemData(
-                                          icon: Icon(Icons.explore_outlined),
-                                          selectedIcon: Icon(Icons.explore),
-                                          label: '探索',
-                                        ),
-                                        NavigationItemData(
-                                          icon: Icon(Icons.person_outlined),
-                                          selectedIcon: Icon(Icons.person),
-                                          label: '我的',
+                                        Tooltip(
+                                          message: '设置',
+                                          child: IconButton(
+                                            icon: const Icon(Icons.settings),
+                                            onPressed: () => MainPage.to(
+                                                () => const SettingsPage()),
+                                          ),
                                         ),
                                       ],
-                                      selectedCallback: (int index) {
-                                        setState(() {
-                                          i = index;
-                                        });
-                                      },
-                                      selectedIndex: i)
-                                ]);
-                              }))))
-            ]))));
+                                    ),
+                                    Expanded(
+                                      child: AnimatedSwitcher(
+                                        duration:
+                                            const Duration(milliseconds: 150),
+                                        reverseDuration:
+                                            const Duration(milliseconds: 150),
+                                        child: pages[i],
+                                      ),
+                                    ),
+                                    CustomNavigationBar(
+                                        destinations: const <NavigationItemData>[
+                                          NavigationItemData(
+                                            icon: Icon(Icons.explore_outlined),
+                                            selectedIcon: Icon(Icons.explore),
+                                            label: '探索',
+                                          ),
+                                          NavigationItemData(
+                                            icon: Icon(Icons.person_outlined),
+                                            selectedIcon: Icon(Icons.person),
+                                            label: '我的',
+                                          ),
+                                        ],
+                                        selectedCallback: (int index) {
+                                          setState(() {
+                                            i = index;
+                                          });
+                                        },
+                                        selectedIndex: i)
+                                  ]);
+                                }))))
+              ]))
+            ])));
   }
 }

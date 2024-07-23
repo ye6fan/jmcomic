@@ -20,40 +20,24 @@ class App {
 
   static bool get isMobile => Platform.isAndroid || Platform.isIOS;
 
-  static final messageKey = GlobalKey<ScaffoldMessengerState>();
-
   static final navigatorKey = GlobalKey<NavigatorState>();
 
   static BuildContext? get globalContext => navigatorKey.currentContext;
 
-  static late final String dataPath;
-
   static late final String cachePath;
-
-  static late final String tempPath;
 
   static late final String separator;
 
   static Future<void> init() async {
     cachePath = (await getApplicationCacheDirectory()).path;
-    dataPath = (await getApplicationSupportDirectory()).path;
-    tempPath = (await getTemporaryDirectory()).path;
     separator = Platform.pathSeparator;
   }
 
-  // 不太理解to和globalTo的区别是什么
   static Future<T?> to<T extends Object?>(
       BuildContext context, Widget Function() page) {
     LogManager.addLog(LogLevel.info, "App Status",
         "Going to Page /${page.runtimeType.toString().replaceFirst("() => ", "")}");
     return Navigator.of(context)
-        .push<T>(AppPageRoute(builder: (context) => page()));
-  }
-
-  static Future<T?> globalTo<T extends Object?>(Widget Function() page) {
-    LogManager.addLog(LogLevel.info, "App Status",
-        "Global Going to Page /${page.runtimeType.toString().replaceFirst("() => ", "")}");
-    return Navigator.of(globalContext!)
         .push<T>(AppPageRoute(builder: (context) => page()));
   }
 }
