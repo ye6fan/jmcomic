@@ -11,20 +11,20 @@ class Appdata {
   ];
 
   // jm用户信息
-  String jmName = "";
-  String jmPwd = "";
+  String jmName = '';
+  String jmPwd = '';
 
   Future<void> writeData([bool sync = true]) async {
     // shared_preferences包，保存全局的数据
     var instance = await SharedPreferences.getInstance();
-    await instance.setString("jmName", jmName);
-    await instance.setString("jmPwd", jmPwd);
+    await instance.setString('jmName', jmName);
+    await instance.setString('jmPwd', jmPwd);
   }
 
   Future<void> readData() async {
     var instance = await SharedPreferences.getInstance();
-    jmName = instance.getString("jmName") ?? "";
-    jmPwd = instance.getString("jmPwd") ?? "";
+    jmName = instance.getString('jmName') ?? '';
+    jmPwd = instance.getString('jmPwd') ?? '';
   }
 }
 

@@ -43,6 +43,8 @@ class PointerController {
     logic.update(['toolbar']);
     if (!logic.showToolbar) {
       SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
+    } else{
+      SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
     }
   }
 }

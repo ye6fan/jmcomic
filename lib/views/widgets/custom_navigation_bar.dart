@@ -116,7 +116,7 @@ class AnimatedNavigationItem extends AnimatedWidget {
                                   color: value != 0
                                       ? colorScheme.secondaryContainer
                                       : (hover
-                                          ? colorScheme.surfaceVariant
+                                          ? colorScheme.primaryContainer
                                           : null)),
                               child: Center(child: icon)))),
                   Positioned(

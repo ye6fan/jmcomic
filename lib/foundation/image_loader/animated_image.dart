@@ -78,8 +78,8 @@ class _AnimatedImageState extends State<AnimatedImage> {
                           : 0))));
     }
     return AnimatedSwitcher(
-        duration: const Duration(microseconds: 200),
-        reverseDuration: const Duration(microseconds: 200),
+        duration: const Duration(microseconds: 150),
+        reverseDuration: const Duration(microseconds: 150),
         child: result);
   }
 

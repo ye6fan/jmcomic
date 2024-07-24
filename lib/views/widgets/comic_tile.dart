@@ -75,7 +75,7 @@ abstract class ComicTile extends StatelessWidget {
                         width: height * 0.75,
                         height: double.infinity,
                         decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.surfaceVariant,
+                            color: Theme.of(context).colorScheme.primaryContainer,
                             borderRadius: BorderRadius.circular(8)),
                         clipBehavior: Clip.antiAlias,
                         child: cover),

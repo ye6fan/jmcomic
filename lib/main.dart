@@ -49,6 +49,7 @@ class _MyAppState extends State<MyApp> {
         statusBarIconBrightness: Brightness.light,
         systemNavigationBarIconBrightness: Brightness.light,
         systemNavigationBarContrastEnforced: false));
+    // App.navigatorKey要在这里绑定，不然后续的globalContext为null
     return MaterialApp(
         title: 'yefan',
         navigatorKey: App.navigatorKey,

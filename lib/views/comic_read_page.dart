@@ -7,7 +7,6 @@ import 'package:jmcomic/views/widgets/toolbar.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
-import '../app.dart';
 import '../network/base_models.dart';
 import '../network/jm_network/jm_models.dart';
 
@@ -22,7 +21,7 @@ class ComicReadPageLogic extends StateController {
   String? errorMessage;
   var urls = <String>[]; // 漫画图片的请求URL
   var requestedLoadingItems = <bool>[]; // 防止重复加载
-  var focusNode = FocusNode();
+  var focusNode = FocusNode(); // 大概作为key使用
   bool showToolbar = false; // 展示工具栏
   bool? rotation; // null跟随系统, false竖向, true横向
 
@@ -32,26 +31,9 @@ class ComicReadPageLogic extends StateController {
   // 当前滚动到的元素序号，底层创建了ItemPositionsNotifier（通知者）
   var itemScrollListener = ItemPositionsListener.create();
 
-  late int _index;
-
-  int get index => _index;
-
-  set index(int value) {
-    _index = value;
-    for (var element in _indexChangeCallbacks) {
-      element(value);
-    }
-  }
-
-  final _indexChangeCallbacks = <void Function(int)>[];
-
-  // 图像控制器，这所以是多个猜测是，章节列表也要滑动
-  PhotoViewController get photoViewController =>
-      photoViewControllers[index] ?? photoViewControllers[0]!;
+  PhotoViewController photoViewController = PhotoViewController();
 
   var photoViewControllers = <int, PhotoViewController>{};
-
-  late final void Function() openEpsView; // 新加的方法，控制章节视图展示
 
   Future<void> get() async {
     if (loading) return;
@@ -65,20 +47,8 @@ class ComicReadPageLogic extends StateController {
     update();
   }
 
-  void handleKeyboard(KeyEvent event) {
-    if (event is KeyUpEvent) {
-      switch (event.logicalKey) {
-        case LogicalKeyboardKey.arrowDown:
-        case LogicalKeyboardKey.arrowRight:
-          jumpToNextPage();
-        case LogicalKeyboardKey.arrowUp:
-        case LogicalKeyboardKey.arrowLeft:
-          jumpToLastPage();
-        case LogicalKeyboardKey.f12:
-          fullscreen();
-      }
-    }
-  }
+  // 下面5个方法都没有实现
+  void handleKeyboard(KeyEvent event) {}
 
   void jumpToNextPage() {}
 
@@ -94,7 +64,7 @@ class ComicReadPage extends StatelessWidget {
   final int initPage;
   final int initEpIndex;
   final ReadData readData;
-
+  late final double? stateBarHeight; // immersive模式下状态栏高度为0，所以提前保存一下高度
   // 在调用构造函数时，就已经添加过logic
   ComicReadPage.jmComic(String id, String name, List<String> epIds,
       List<String> epNames, this.initEpIndex,
@@ -107,6 +77,7 @@ class ComicReadPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StateBuilder(initState: (logic) {
+      stateBarHeight = MediaQuery.of(context).padding.top;
       SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
     }, dispose: (logic) {
       SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
@@ -123,6 +94,7 @@ class ComicReadPage extends StatelessWidget {
                   child: Center(
                       child: Column(
                     children: [
+                      SizedBox(height: stateBarHeight),
                       AppBar(
                           shadowColor: Colors.transparent,
                           title: const AnimatedOpacity(
@@ -144,6 +116,7 @@ class ComicReadPage extends StatelessWidget {
                 Center(child: Text(logic.errorMessage!))
               ]);
             } else {
+              // 监听手势
               var body = Listener(
                   onPointerDown: PointerController.onPointerDown,
                   onPointerUp: PointerController.onPointerUp,
@@ -161,6 +134,7 @@ class ComicReadPage extends StatelessWidget {
                     buildTopToolbar(logic, context),
                     buildBottomToolbar(logic, context)
                   ]));
+              // 监听键盘
               return KeyboardListener(
                   focusNode: logic.focusNode,
                   autofocus: true,

@@ -32,6 +32,7 @@ abstract class BaseImageProvider<T extends BaseImageProvider<T>>
         try {
           data = await load(chunkEvents);
         } catch (e) {
+          // 失败就重试
           retryTime <<= 1;
           if (retryTime > (1 << 5) || stop) rethrow;
           await Future.delayed(Duration(seconds: retryTime));
@@ -41,8 +42,8 @@ abstract class BaseImageProvider<T extends BaseImageProvider<T>>
       final buffer = await ImmutableBuffer.fromUint8List(data!);
       return decode(buffer);
     } catch (e) {
+      // 清理失败图像的缓存
       scheduleMicrotask(() {
-        // evict驱逐
         PaintingBinding.instance.imageCache.evict(key);
       });
       rethrow;
