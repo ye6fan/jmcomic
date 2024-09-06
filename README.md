@@ -1,6 +1,6 @@
 # jmcomic
 
-[![flutter](https://img.shields.io/badge/flutter-3.22.2-blue)](https://flutter.dev/) 
+[![flutter](https://img.shields.io/badge/flutter-3.24.2-blue)](https://flutter.dev/) 
 [![Download](https://img.shields.io/github/v/release/ye6fan/jmcomic)](https://github.com/ye6fan/jmcomic/releases)
 
 练手的项目，一个盗版的不完整的禁漫天堂。
