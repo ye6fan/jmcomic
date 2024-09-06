@@ -49,15 +49,14 @@ class _MyAppState extends State<MyApp> {
         statusBarIconBrightness: Brightness.light,
         systemNavigationBarIconBrightness: Brightness.light,
         systemNavigationBarContrastEnforced: false));
+    var darkScheme = ColorScheme.fromSeed(
+        seedColor: Colors.pinkAccent, brightness: Brightness.dark);
     // App.navigatorKey要在这里绑定，不然后续的globalContext为null
     return MaterialApp(
         title: 'yefan',
         navigatorKey: App.navigatorKey,
         debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(
-                seedColor: Colors.pinkAccent, brightness: Brightness.dark),
-            useMaterial3: true),
+        theme: ThemeData(colorScheme: darkScheme, useMaterial3: true),
         onGenerateRoute: (settings) =>
             AppPageRoute(builder: (context) => const MainPage()));
   }

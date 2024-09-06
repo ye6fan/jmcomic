@@ -27,7 +27,7 @@ class App {
   static late final String cachePath;
 
   static late final String separator;
-
+  // 初始化全局路径
   static Future<void> init() async {
     cachePath = (await getApplicationCacheDirectory()).path;
     separator = Platform.pathSeparator;

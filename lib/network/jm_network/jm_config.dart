@@ -1,18 +1,30 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
 
 import 'jm_network.dart';
 
+// 这个类中的所有配置，我都不知道原作者是如何获取到的
 class JmConfig {
-  static const jmUA =
-      'Mozilla/5.0 (Linux; Android 13; 012345678 Build/TQ1A.230305.002; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/114.0.5735.196 Safari/537.36';
+  static var _device = '';
 
-  static const String webUA =
-      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36";
+  static String get jmUA {
+    if (_device.isEmpty) {
+      var chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+      var random = Random();
+      for (var i = 0; i < 9; i++) {
+        _device += chars[random.nextInt(chars.length)];
+      }
+    }
+    return 'Mozilla/5.0 (Linux; Android 13; $_device Build/TQ1A.230305.002; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/114.0.5735.196 Safari/537.36';
+  }
 
-  static const _jmVersion = '1.7.0';
+  static const webUA =
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36';
+
+  static const _jmVersion = '1.7.2';
 
   static const _jmAuthKey = '18comicAPPContent';
 
@@ -21,19 +33,19 @@ class JmConfig {
   static const kJmSecret = '185Hcomic3PAPP7R';
 
   static const baseUrls = [
-    'https://www.jmapinodeudzn.xyz',
-    'https://www.jmapinode.vip',
-    'https://www.jmapinode.biz',
-    'https://www.jmapinode.xyz',
+    'https://www.jmeadpoolcdn.one',
+    'https://www.jmeadpoolcdn.life',
+    'https://www.jmapiproxyxxx.one',
+    'https://www.jmfreedomproxy.xyz'
   ];
 
   static const imagesUrls = [
-    'https://cdn-msp.jmapiproxy1.monster',
-    'https://cdn-msp2.jmapiproxy3.cc',
-    'https://cdn-msp.jmapiproxy2.cc',
-    'https://cdn-msp2.jmapiproxy1.cc',
-    'https://cdn-msp2.jmapiproxy4.cc',
     'https://cdn-msp.jmapiproxy3.cc',
+    'https://cdn-msp3.jmapiproxy3.cc',
+    'https://cdn-msp2.jmapiproxy1.cc',
+    'https://cdn-msp3.jmapiproxy3.cc',
+    'https://cdn-msp2.jmapiproxy4.cc',
+    'https://cdn-msp2.jmapiproxy3.cc',
   ];
 
   static String getBaseUrl() {
