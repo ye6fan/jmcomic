@@ -15,7 +15,7 @@
 
 - #### 问题1：在安卓虚拟机可以正常运行，但是安装到物理机后‘灰屏’卡死
 - 解决1：Expanded组件必须在Row等组件中（所以为什么虚拟机就可以正常运行）
-- #### 问题2：关于UI模式为immerse（全屏），状态栏依旧占用空间（一个黑条）
+- #### 问题2：关于UI模式为immerse（全屏），状态栏依旧占用空间（一个黑条，因为有摄像头）
 - 解决2：向android/app/src/main/res/values/styles.xml中的style标签里加入\<item name="android:windowLayoutInDisplayCutoutMode">shortEdges\</item>
 - #### 问题3：安装在物理机上无法联网
 - 解决3：在网上搜就可以得到答案，向两个AndroidManifest.xml中加入一些配置
